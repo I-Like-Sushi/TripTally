@@ -1,5 +1,89 @@
 package org.example.eindopdrachtbackend.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
+import java.util.List;
+
+@Entity
+@Table(schema = "users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotBlank
+    @Size(min = 3, max = 30)
+    private String username;
+    @NotBlank
+    @Size(min = 3, max = 30)
+    private String firstName;
+    @NotBlank
+    @Size(min = 3, max = 30)
+    private String lastName;
+    @Email
+    @NotBlank
+    private String email;
+
+    @NotBlank
+    @Size(min = 8, max = 50, message = "Password must be at least 8 characters long")
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>_\\-]).{8,}$",
+            message = "Password must contain at least one uppercase, one lowercase, one digit, and one special character"
+    )
+    private String password;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateOfBirth;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    private List<String> roles;
+
+    private boolean enabled;
+    private String gender;
+    private String bio;
+
+    public User() {};
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getFirstName() { return firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) {this.gender = gender; }
+
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+
+    public List<String> getRoles() { return roles; }
+    public void setRoles(List<String> roles) { this.roles = roles; }
+    public void addRoles(String roles) { this.roles.add(roles); }
+    public void removeRoles(String roles) { this.roles.remove(roles); }
+
+
+
 }
