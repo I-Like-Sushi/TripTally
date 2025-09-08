@@ -2,10 +2,7 @@ package org.example.eindopdrachtbackend.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +37,7 @@ public class User {
     private String password;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @Past
     private LocalDate dateOfBirth;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -54,6 +52,9 @@ public class User {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public String getFirstName() { return firstName; }
