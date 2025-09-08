@@ -32,6 +32,7 @@ public class UserResponseDto {
     private String bio;
     private boolean enabled;
 
+    public void setId(Long id) { this.id = id; }
     public void setUsername(String username) { this.username = username; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
@@ -40,8 +41,8 @@ public class UserResponseDto {
     public void setGender(String gender) {this.gender = gender; }
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
     public void setRoles(List<String> roles) { this.roles = roles; }
-
-
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 
 }
+
 
