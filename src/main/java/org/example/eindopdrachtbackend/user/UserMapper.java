@@ -25,6 +25,7 @@ public class UserMapper {
 
     public User toEntity(UserRequestDto dto) {
         User user = new User();
+        user.setUsername(dto.getUsername());
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
@@ -39,6 +40,7 @@ public class UserMapper {
         if (dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
         if (dto.getLastName() != null) user.setLastName(dto.getLastName());
         if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getPassword() != null) user.setPassword(dto.getPassword());
         if (dto.getBio() != null) user.setBio(dto.getBio());
         if (dto.getGender() != null) user.setGender(dto.getGender());
         if (dto.getDateOfBirth() != null) user.setDateOfBirth(dto.getDateOfBirth());

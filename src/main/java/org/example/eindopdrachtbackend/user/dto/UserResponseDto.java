@@ -23,6 +23,7 @@ public class UserResponseDto {
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @Past
     private LocalDate dateOfBirth;
 
     @NotEmpty

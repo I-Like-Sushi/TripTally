@@ -2,10 +2,7 @@ package org.example.eindopdrachtbackend.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,6 +31,7 @@ public class UserRequestDto {
     private String password;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @Past
     private LocalDate dateOfBirth;
 
     private String gender;

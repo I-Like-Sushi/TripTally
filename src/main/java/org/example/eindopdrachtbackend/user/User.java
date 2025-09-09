@@ -5,44 +5,29 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(schema = "users")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
-    @Size(min = 3, max = 30)
     private String username;
-    @NotBlank
-    @Size(min = 3, max = 30)
     private String firstName;
-    @NotBlank
-    @Size(min = 3, max = 30)
     private String lastName;
-    @Email
-    @NotBlank
     private String email;
-
-    @NotBlank
-    @Size(min = 8, max = 50, message = "Password must be at least 8 characters long")
-    @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>_\\-]).{8,}$",
-            message = "Password must contain at least one uppercase, one lowercase, one digit, and one special character"
-    )
     private String password;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Past
     private LocalDate dateOfBirth;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    private List<String> roles;
+    private List<String> roles = new ArrayList<>();
+
 
     private boolean enabled;
     private String gender;
