@@ -40,6 +40,7 @@ public class UserMapper {
     }
 
     public void updateEntityFromDto(UserUpdateDto dto, User user) {
+        if (dto.getUsername() != null) user.setUsername(dto.getUsername());
         if (dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
         if (dto.getLastName() != null) user.setLastName(dto.getLastName());
         if (dto.getEmail() != null) user.setEmail(dto.getEmail());
@@ -48,7 +49,5 @@ public class UserMapper {
         if (dto.getGender() != null) user.setGender(dto.getGender());
         if (dto.getDateOfBirth() != null) user.setDateOfBirth(dto.getDateOfBirth());
     }
-
-
 
 }
