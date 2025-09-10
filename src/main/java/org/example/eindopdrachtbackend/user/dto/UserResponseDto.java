@@ -34,15 +34,34 @@ public class UserResponseDto {
     private boolean enabled;
 
     public void setId(Long id) { this.id = id; }
+    public Long getId() { return id; }
+
     public void setUsername(String username) { this.username = username; }
+    public String getUsername() { return username; }
+
     public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getFirstName() { return firstName; }
+
     public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getLastName() { return lastName; }
+
     public void setEmail(String email) { this.email = email; }
+    public String getEmail() { return email; }
+
     public void setBio(String bio) { this.bio = bio; }
+    public String getBio() { return bio; }
+
     public void setGender(String gender) {this.gender = gender; }
+    public String getGender() { return gender; }
+
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+
     public void setRoles(List<String> roles) { this.roles = roles; }
+    public List<String> getRoles() { return roles; }
+
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public boolean getEnabled() { return enabled; }
 
 }
 

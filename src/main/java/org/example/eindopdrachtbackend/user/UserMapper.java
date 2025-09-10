@@ -5,6 +5,9 @@ import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
 import org.example.eindopdrachtbackend.user.dto.UserUpdateDto;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Component
 public class UserMapper {
 
@@ -45,4 +48,7 @@ public class UserMapper {
         if (dto.getGender() != null) user.setGender(dto.getGender());
         if (dto.getDateOfBirth() != null) user.setDateOfBirth(dto.getDateOfBirth());
     }
+
+
+
 }
