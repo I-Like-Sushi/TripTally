@@ -13,7 +13,6 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    // Example: load from application.properties in a real app
     private static final String SECRET = "your-256-bit-secret-your-256-bit-secret";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
