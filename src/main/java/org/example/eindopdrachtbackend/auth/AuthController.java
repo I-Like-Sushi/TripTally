@@ -3,20 +3,24 @@ package org.example.eindopdrachtbackend.auth;
 import org.example.eindopdrachtbackend.auth.dto.LoginRequestDto;
 import org.example.eindopdrachtbackend.auth.dto.LoginResponseDto;
 import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
+import org.example.eindopdrachtbackend.exception.auth.UserNotAdmin;
+import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.security.JwtService;
+import org.example.eindopdrachtbackend.user.User;
 import org.example.eindopdrachtbackend.user.UserMapper;
 import org.example.eindopdrachtbackend.user.UserRepo;
+import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/auth")
+@RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     private final JwtService jwtService;
@@ -39,7 +43,7 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            requestDto.getEmail(),
+                            requestDto.getUsername(),
                             requestDto.getPassword()
                     )
             );
@@ -53,7 +57,38 @@ public class AuthController {
             return ResponseEntity.ok(loginResponseDto);
         } catch (AuthenticationException ex) {
             throw new InvalidLoginException("Username and/or password unknown");
-
         }
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication auth) {
+
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        String username = auth.getName();
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        UserResponseDto dto = userMapper.toDto(user);
+
+        return ResponseEntity.ok(dto);
+
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestParam long adminId, Authentication auth) {
+        authValidationService.validateSelfOrThrow(adminId, auth);
+        if (auth.getAuthorities().stream().anyMatch(a -> !a.getAuthority().equals("ADMIN"))) {
+            throw new UserNotAdmin("You are not authorized for this action.");
+        }
+        String username = auth.getName();
+        userRepo.deleteById(id);
+        return ResponseEntity.ok("Account of " + username + " deleted successfully");
+
+    }
+
+
 }

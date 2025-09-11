@@ -1,6 +1,7 @@
 package org.example.eindopdrachtbackend.exception.common;
 
 import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
+import org.example.eindopdrachtbackend.exception.auth.UserNotAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserNotAdmin.class)
+    public ResponseEntity<String> handleUserNotAdmin(UserNotAdmin ex){
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class) // catches all Exceptions

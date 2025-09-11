@@ -2,6 +2,8 @@ package org.example.eindopdrachtbackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +23,11 @@ public class SecurityConfig {
     public BCryptPasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -28,10 +35,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/login",
-                                "/api/users/createUser",
-                                "/api/users/{id}"
+                                "/api/users/register"
                         ).permitAll()
-                        .requestMatchers("/auth/me").authenticated()
+
+                        .requestMatchers(
+                                "/auth/deleteUser/{id}"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                "/auth/me",
+                                "/api/users/{id}"
+                        ).authenticated()
+
                         .anyRequest().authenticated()
                 )
 //                .addFilterBefore(UsernamePasswordAuthenticationFilter.class)

@@ -1,10 +1,12 @@
 package org.example.eindopdrachtbackend.user;
 
+import org.example.eindopdrachtbackend.auth.AuthValidationService;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
 import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
 import org.example.eindopdrachtbackend.user.dto.UserUpdateDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,11 +16,13 @@ public class UserController {
     private final UserService userService;
     private final UserRepo userRepo;
     private final UserMapper userMapper;
+    private final AuthValidationService authValidationService;
 
-    public UserController(UserService userService, UserRepo userRepo, UserMapper userMapper) {
+    public UserController(UserService userService, UserRepo userRepo, UserMapper userMapper, AuthValidationService authValidationService) {
         this.userService = userService;
         this.userRepo = userRepo;
         this.userMapper = userMapper;
+        this.authValidationService = authValidationService;
     }
 
     @PostMapping("/register")
@@ -29,15 +33,9 @@ public class UserController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long id) {
-        User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
-        UserResponseDto responseDto = userMapper.toDto(user);
-        return ResponseEntity.ok(responseDto);
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto dto) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto dto, Authentication auth) {
+        authValidationService.validateSelfOrThrow(id, auth);
         User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         userMapper.updateEntityFromDto(dto, user);
         userRepo.save(user);
@@ -46,9 +44,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable Long id, Authentication auth) {
+        authValidationService.validateSelfOrThrow(id, auth);
         User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
-        String response = "User " + user.getUsername() + " has successfully been deleted. \n";
+        String response = "User " + user.getUsername() + " has successfully been deleted.";
         userRepo.delete(user);
         return ResponseEntity.ok(response);
     }

@@ -1,11 +1,20 @@
 package org.example.eindopdrachtbackend.user;
 
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
     private final UserMapper userMapper;
@@ -24,7 +33,7 @@ public class UserService {
 
         user.setPassword(encryptedPassword);
         user.setEnabled(true);
-        user.addRoles("USER");
+        user.addRoles("ROLE_USER");
         userRepo.save(user);
         return user;
     }
@@ -36,9 +45,28 @@ public class UserService {
 
         user.setPassword(encryptedPassword);
         user.setEnabled(true);
-        user.addRoles("ADMIN");
+        user.addRoles("ROLE_ADMIN");
         userRepo.save(user);
         return user;
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .authorities(authorities)
+                .accountLocked(!user.isEnabled())
+                .disabled(!user.isEnabled())
+                .build();
+    }
+
 
 }
