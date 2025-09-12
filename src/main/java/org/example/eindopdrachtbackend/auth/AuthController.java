@@ -63,6 +63,8 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication auth) {
 
+        System.out.println(auth);
+
         if (auth == null || !auth.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
@@ -81,7 +83,7 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestParam long adminId, Authentication auth) {
         authValidationService.validateSelfOrThrow(adminId, auth);
-        if (auth.getAuthorities().stream().anyMatch(a -> !a.getAuthority().equals("ADMIN"))) {
+        if (auth.getAuthorities().stream().anyMatch(a -> !a.getAuthority().equals("ROLE_ADMIN"))) {
             throw new UserNotAdmin("You are not authorized for this action.");
         }
         String username = auth.getName();
