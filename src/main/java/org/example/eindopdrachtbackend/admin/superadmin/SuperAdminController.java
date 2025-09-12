@@ -1,5 +1,6 @@
 package org.example.eindopdrachtbackend.admin.superadmin;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.eindopdrachtbackend.admin.AdminService;
 import org.example.eindopdrachtbackend.auth.AuthValidationService;
 import org.example.eindopdrachtbackend.exception.auth.UserNotSuperAdmin;
@@ -54,14 +55,9 @@ public class SuperAdminController {
 
     @PostMapping("/createAdmin")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public ResponseEntity<UserResponseDto> createAdmin(@RequestBody UserRequestDto dto, Authentication auth,
-                                                       @RequestParam Long superAdminId,
-                                                       @RequestHeader("X-SUPERADMIN-SECRET") String providedSecret) {
-        authValidationService.validateSelfOrThrow(superAdminId, auth);
+    public ResponseEntity<UserResponseDto> createAdmin(@RequestBody UserRequestDto dto, Authentication auth, @RequestParam Long superAdminId) {
 
-        if (!providedSecret.equals(superAdminSecret)) {
-            throw new UserNotSuperAdmin("Invalid SuperAdmin Password");
-        }
+        authValidationService.validateSelfOrThrow(superAdminId, auth);
 
         User newUser = adminService.createAdmin(dto);
         UserResponseDto responseDto = userMapper.toDto(newUser);
@@ -70,13 +66,8 @@ public class SuperAdminController {
 
     @DeleteMapping("/deleteAdmin/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public ResponseEntity<String> deleteAdmin(@PathVariable Long id, Authentication auth,
-                                              @RequestHeader("X-SUPERADMIN-SECRET") String providedSecret) {
+    public ResponseEntity<String> deleteAdmin(@PathVariable Long id, Authentication auth) {
         authValidationService.validateSelfOrThrow(id, auth);
-
-        if (!providedSecret.equals(superAdminSecret)) {
-            throw new UserNotSuperAdmin("Invalid SuperAdmin Password");
-        }
 
         userRepo.deleteById(id);
         return ResponseEntity.ok("Admin has been deleted");
@@ -97,25 +88,16 @@ public class SuperAdminController {
 
     @GetMapping("/fetchAllUsers")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public List<User> fetchAllUsers(Authentication auth, @RequestHeader("X-SUPERADMIN-SECRET") String providedSecret, @RequestParam Long superAdminId) {
+    public List<User> fetchAllUsers(Authentication auth, @RequestParam Long superAdminId) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
-
-        if (!providedSecret.equals(superAdminSecret)) {
-            throw new UserNotSuperAdmin("Invalid SuperAdmin Password");
-        }
-
         return userRepo.findAll();
 
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public Optional<User> fetchUser(@PathVariable Long id, Authentication auth, @RequestHeader("X-SUPERADMIN-SECRET") String providedSecret, @RequestParam Long superAdminId) {
+    public Optional<User> fetchUser(@PathVariable Long id, Authentication auth, @RequestParam Long superAdminId) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
-
-        if (!providedSecret.equals(superAdminSecret)) {
-            throw new UserNotSuperAdmin("Invalid SuperAdmin Password");
-        }
 
         return userRepo.findById(id);
 

@@ -23,14 +23,12 @@ public class AdminController {
     private final AuthValidationService authValidationService;
     private final AdminModificationPolicy adminModificationPolicy;
     private final UserMapper userMapper;
-    private final AdminService adminService;
 
-    public AdminController(UserRepo userRepo, AuthValidationService authValidationService, AdminModificationPolicy adminModificationPolicy, UserMapper userMapper, AdminService adminService) {
+    public AdminController(UserRepo userRepo, AuthValidationService authValidationService, AdminModificationPolicy adminModificationPolicy, UserMapper userMapper) {
         this.userRepo = userRepo;
         this.authValidationService = authValidationService;
         this.adminModificationPolicy = adminModificationPolicy;
         this.userMapper = userMapper;
-        this.adminService = adminService;
     }
 
     @DeleteMapping("/{id}")
@@ -46,8 +44,8 @@ public class AdminController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponseDto> getAccount(@PathVariable Long id, Authentication auth) {
-        authValidationService.validateSelfOrThrow(id, auth);
+    public ResponseEntity<UserResponseDto> getAccount(@PathVariable Long id, Authentication auth, @RequestParam long adminId) {
+        authValidationService.validateSelfOrThrow(adminId, auth);
 
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User unknown"));
@@ -58,7 +56,8 @@ public class AdminController {
 
     @GetMapping("/fetchAllUsers")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserResponseDto>> getAllUsers(Authentication auth) {
+    public ResponseEntity<List<UserResponseDto>> getAllUsers(Authentication auth, @RequestParam long adminId) {
+        authValidationService.validateSelfOrThrow(adminId, auth);
         List<UserResponseDto> AllAccountsToDto = userRepo.findAll().stream()
                 .map(userMapper::toDto)
                 .toList();
@@ -73,20 +72,11 @@ public class AdminController {
             @RequestBody UserUpdateDto dto,
             Authentication auth) {
 
+        adminModificationPolicy.enforce(auth, id);
+
         User targetUser = userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        boolean isSuperAdmin = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"));
-
-        boolean targetIsAdmin = targetUser.getRoles().contains("ADMIN");
-
-        // Admins cannot update other admins unless SUPER_ADMIN
-        if (!isSuperAdmin && targetIsAdmin && !targetUser.getId().equals(adminService.getCurrentUserId(auth))) {
-            throw new UserNotSuperAdmin("Admins cannot update other admins.");
-        }
-
-        // No role change possible because UserUpdateDto has no roles field
         userMapper.updateEntityFromDto(dto, targetUser);
         userRepo.save(targetUser);
 

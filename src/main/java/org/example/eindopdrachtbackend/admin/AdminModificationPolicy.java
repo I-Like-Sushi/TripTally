@@ -19,33 +19,28 @@ public class AdminModificationPolicy {
         this.userRepo = userRepo;
     }
 
-    /**
-     * Enforces the rule: an admin cannot modify another admin.
-     *
-     * @param auth           The currently authenticated user
-     * @param targetAdminId  The ID of the user being modified
-     * @throws UserNotAdmin if the current user is an admin and the target is also an admin
-     */
-    public void enforce(Authentication auth, Long targetAdminId) throws UserNotAdmin {
-        Optional<User> targetUserOpt = userRepo.findById(targetAdminId);
-
+    public void enforce(Authentication auth, Long targetUserId) throws UserNotAdmin {
+        Optional<User> targetUserOpt = userRepo.findById(targetUserId);
         if (targetUserOpt.isEmpty()) {
-            return; // or throw a NotFoundException if you want strict handling
+            return; // or throw NotFoundException
         }
 
         User targetUser = targetUserOpt.get();
 
         boolean currentIsAdmin = hasRole(auth.getAuthorities(), "ROLE_ADMIN");
-        boolean targetIsAdmin = targetUser.getRoles().stream()
-                .anyMatch(role -> role.equals("ROLE_ADMIN"));
+        boolean currentIsSuperAdmin = hasRole(auth.getAuthorities(), "ROLE_SUPERADMIN");
 
-        if (currentIsAdmin && targetIsAdmin) {
-            throw new UserNotAdmin("You are not authorized to modify another admin.");
+        boolean targetIsAdminOrSuper = targetUser.getRoles().stream()
+                .anyMatch(role -> role.equals("ROLE_ADMIN") || role.equals("ROLE_SUPERADMIN"));
+
+        // Only block if the current user is an admin (not superadmin) and the target is admin/superadmin
+        if (currentIsAdmin && !currentIsSuperAdmin && targetIsAdminOrSuper) {
+            throw new UserNotAdmin("You are not authorized to modify another admin or superadmin.");
         }
     }
 
     private boolean hasRole(Collection<? extends GrantedAuthority> authorities, String role) {
-        return authorities.stream()
-                .anyMatch(a -> a.getAuthority().equals(role));
+        return authorities.stream().anyMatch(a -> a.getAuthority().equals(role));
     }
+
 }
