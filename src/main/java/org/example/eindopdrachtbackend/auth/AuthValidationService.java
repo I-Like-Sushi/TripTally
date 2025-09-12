@@ -22,7 +22,7 @@ public class AuthValidationService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
 
-        User currentUser = userRepo.findByEmail(authentication.getName())
+        User currentUser = userRepo.findByUsername(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Current user not found"));
 
         if (!currentUser.getId().equals(targetId)) {
