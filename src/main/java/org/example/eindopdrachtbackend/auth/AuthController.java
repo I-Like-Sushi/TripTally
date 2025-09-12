@@ -27,15 +27,13 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
     private final UserRepo userRepo;
-    private final AuthValidationService authValidationService;
 
 
-    public AuthController(JwtService jwtService, AuthenticationManager authenticationManager, UserMapper userMapper, UserRepo userRepo, AuthValidationService authValidationService) {
+    public AuthController(JwtService jwtService, AuthenticationManager authenticationManager, UserMapper userMapper, UserRepo userRepo) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.userMapper = userMapper;
         this.userRepo = userRepo;
-        this.authValidationService = authValidationService;
     }
 
     @PostMapping("/login")
@@ -78,19 +76,5 @@ public class AuthController {
         return ResponseEntity.ok(dto);
 
     }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestParam long adminId, Authentication auth) {
-        authValidationService.validateSelfOrThrow(adminId, auth);
-        if (auth.getAuthorities().stream().anyMatch(a -> !a.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new UserNotAdmin("You are not authorized for this action.");
-        }
-        String username = auth.getName();
-        userRepo.deleteById(id);
-        return ResponseEntity.ok("Account of " + username + " deleted successfully");
-
-    }
-
 
 }

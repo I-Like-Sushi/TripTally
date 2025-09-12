@@ -38,18 +38,6 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User createAdmin(UserRequestDto dto) {
-        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
-
-        User user = userMapper.toEntity(dto);
-
-        user.setPassword(encryptedPassword);
-        user.setEnabled(true);
-        user.addRoles("ROLE_ADMIN");
-        userRepo.save(user);
-        return user;
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepo.findByUsername(username)

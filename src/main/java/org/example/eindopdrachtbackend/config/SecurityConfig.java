@@ -57,12 +57,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/login",
-                                "/api/users/register"
+                                "/api/users/register",
+                                "/api/internal/superadmin-ops-9f3x7k/createSuperAdmin"
                         ).permitAll()
 
                         .requestMatchers(
-                                "/auth/deleteUser/{id}"
+                                "/api/admin/{id}",
+                                "/api/admin/fetchAllUsers"
                         ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                "/api/internal/superadmin-ops-9f3x7k/createAdmin",
+                                "/api/internal/superadmin-ops-9f3x7k/fetchAllUsers",
+                                "/api/internal/superadmin-ops-9f3x7k/deleteAdmin/",
+                                "/api/internal/superadmin-ops-9f3x7k/deleteSuperAdmin/"
+                        ).hasRole("SUPERADMIN")
 
                         .requestMatchers(
                                 "/auth/me",

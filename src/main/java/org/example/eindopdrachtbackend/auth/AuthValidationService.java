@@ -16,7 +16,7 @@ public class AuthValidationService {
         this.userRepo = userRepo;
     }
 
-    public User validateSelfOrThrow(Long targetId, Authentication authentication) {
+    public void validateSelfOrThrow(Long targetId, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated() ||
                 "anonymousUser".equals(authentication.getName())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
@@ -29,6 +29,5 @@ public class AuthValidationService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden: you are not allowed to access this resource");
         }
 
-        return currentUser;
     }
 }

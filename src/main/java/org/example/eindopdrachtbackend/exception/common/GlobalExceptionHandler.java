@@ -2,6 +2,7 @@ package org.example.eindopdrachtbackend.exception.common;
 
 import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
 import org.example.eindopdrachtbackend.exception.auth.UserNotAdmin;
+import org.example.eindopdrachtbackend.exception.auth.UserNotSuperAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotAdmin.class)
     public ResponseEntity<String> handleUserNotAdmin(UserNotAdmin ex){
         return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserNotSuperAdmin.class)
+    public ResponseEntity<String> handleUserNotSuperAdmin(UserNotSuperAdmin ex){
+        return  ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());
     }

@@ -1,6 +1,7 @@
 package org.example.eindopdrachtbackend.user;
 
 import org.example.eindopdrachtbackend.auth.AuthValidationService;
+import org.example.eindopdrachtbackend.exception.auth.UserNotSuperAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
 import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
@@ -34,14 +35,24 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto dto, Authentication auth) {
+    public ResponseEntity<UserResponseDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserUpdateDto dto,
+            Authentication auth) {
+
+        // Only self-update allowed
         authValidationService.validateSelfOrThrow(id, auth);
-        User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // No role change possible because UserUpdateDto has no roles field
         userMapper.updateEntityFromDto(dto, user);
         userRepo.save(user);
-        UserResponseDto responseDto = userMapper.toDto(user);
-        return ResponseEntity.ok(responseDto);
+
+        return ResponseEntity.ok(userMapper.toDto(user));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id, Authentication auth) {
@@ -51,5 +62,7 @@ public class UserController {
         userRepo.delete(user);
         return ResponseEntity.ok(response);
     }
+
+    // ("/auth/me") will already handle the get requests for the logged in user.
 
 }

@@ -34,9 +34,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
-
-
             throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+
+        // Skip JWT auth for bootstrap endpoint
+        if (path.equals("/api/internal/superadmin-ops-9f3x7k/createSuperAdmin")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String authHeader = request.getHeader("Authorization");
 
@@ -49,7 +55,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         try {
             String username = jwtService.extractSubject(token);
-
 
             if (username != null &&
                     SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -69,9 +74,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            System.out.println("JwtAuthFilter ERROR: " + e.getMessage());
+            log.error("JwtAuthFilter ERROR: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);
     }
+
 }
