@@ -1,5 +1,6 @@
 package org.example.eindopdrachtbackend.exception.common;
 
+import org.example.eindopdrachtbackend.exception.auth.ForbiddenAction;
 import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
 import org.example.eindopdrachtbackend.exception.auth.UserNotAdmin;
 import org.example.eindopdrachtbackend.exception.auth.UserNotSuperAdmin;
@@ -36,6 +37,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotSuperAdmin.class)
     public ResponseEntity<String> handleUserNotSuperAdmin(UserNotSuperAdmin ex){
         return  ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenAction.class)
+    public ResponseEntity<String> handleForbiddenAction(ForbiddenAction ex){
+        return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());
     }

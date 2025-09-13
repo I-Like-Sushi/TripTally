@@ -67,11 +67,7 @@ public class SecurityConfig {
                         ).hasRole("ADMIN")
 
                         .requestMatchers(
-                                "/api/internal/superadmin-ops-9f3x7k/createAdmin",
-                                "/api/internal/superadmin-ops-9f3x7k/fetchAllUsers",
-                                "/api/internal/superadmin-ops-9f3x7k/deleteAdmin/",
-                                "/api/internal/superadmin-ops-9f3x7k/deleteSuperAdmin/"
-                        ).hasRole("SUPERADMIN")
+                                "/api/internal/superadmin-ops-9f3x7k/**").hasRole("SUPERADMIN")
 
                         .requestMatchers(
                                 "/auth/me",

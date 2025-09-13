@@ -35,7 +35,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestParam long adminId, Authentication auth) {
         authValidationService.validateSelfOrThrow(adminId, auth);
-        adminModificationPolicy.enforce(auth, adminId);
+        adminModificationPolicy.enforce(auth, id);
 
         String username = auth.getName();
         userRepo.deleteById(id);
