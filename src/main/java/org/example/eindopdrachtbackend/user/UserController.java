@@ -1,7 +1,7 @@
 package org.example.eindopdrachtbackend.user;
 
 import org.example.eindopdrachtbackend.auth.AuthValidationService;
-import org.example.eindopdrachtbackend.exception.auth.UserNotSuperAdmin;
+import org.example.eindopdrachtbackend.exception.auth.UnauthorizedException;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
 import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
@@ -46,7 +46,6 @@ public class UserController {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        // No role change possible because UserUpdateDto has no roles field
         userMapper.updateEntityFromDto(dto, user);
         userRepo.save(user);
 
@@ -63,6 +62,16 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // ("/auth/me") will already handle the get requests for the logged in user.
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> getUser(@PathVariable Long id, Authentication auth) {
+
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+            throw new UnauthorizedException("You must be logged in to access this resource");
+        }
+
+        User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        return ResponseEntity.ok(userMapper.restrictedView(user));
+    }
 
 }

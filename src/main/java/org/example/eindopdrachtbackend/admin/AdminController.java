@@ -1,7 +1,6 @@
 package org.example.eindopdrachtbackend.admin;
 
 import org.example.eindopdrachtbackend.auth.AuthValidationService;
-import org.example.eindopdrachtbackend.exception.auth.UserNotSuperAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.User;
 import org.example.eindopdrachtbackend.user.UserMapper;

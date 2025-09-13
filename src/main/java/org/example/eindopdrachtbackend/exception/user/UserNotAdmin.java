@@ -1,4 +1,4 @@
-package org.example.eindopdrachtbackend.exception.auth;
+package org.example.eindopdrachtbackend.exception.user;
 
 public class UserNotAdmin extends RuntimeException {
     public UserNotAdmin(String message) {

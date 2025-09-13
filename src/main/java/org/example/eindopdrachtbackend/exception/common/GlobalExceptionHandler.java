@@ -2,8 +2,9 @@ package org.example.eindopdrachtbackend.exception.common;
 
 import org.example.eindopdrachtbackend.exception.auth.ForbiddenAction;
 import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
-import org.example.eindopdrachtbackend.exception.auth.UserNotAdmin;
-import org.example.eindopdrachtbackend.exception.auth.UserNotSuperAdmin;
+import org.example.eindopdrachtbackend.exception.auth.UnauthorizedException;
+import org.example.eindopdrachtbackend.exception.user.UserNotAdmin;
+import org.example.eindopdrachtbackend.exception.user.UserNotSuperAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleForbiddenAction(ForbiddenAction ex){
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handleUnauthorizedException(UnauthorizedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(ex.getMessage());
     }
 

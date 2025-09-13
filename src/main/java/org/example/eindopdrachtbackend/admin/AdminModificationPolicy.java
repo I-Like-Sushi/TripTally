@@ -1,7 +1,7 @@
 package org.example.eindopdrachtbackend.admin;
 
 import org.example.eindopdrachtbackend.exception.auth.ForbiddenAction;
-import org.example.eindopdrachtbackend.exception.auth.UserNotAdmin;
+import org.example.eindopdrachtbackend.exception.user.UserNotAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.User;
 import org.example.eindopdrachtbackend.user.UserRepo;
@@ -21,11 +21,9 @@ public class AdminModificationPolicy {
     }
 
     public void enforce(Authentication auth, Long targetUserId) {
-        // Load the target user
         User targetUser = userRepo.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        // Get the current user's ID from Authentication
         Long currentUserId = userRepo.findByUsername(auth.getName())
                 .map(User::getId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -38,12 +36,10 @@ public class AdminModificationPolicy {
         boolean targetIsAdmin      = targetUser.getRoles().contains("ROLE_ADMIN");
         boolean targetIsSuperAdmin = targetUser.getRoles().contains("ROLE_SUPERADMIN");
 
-        // Rule 1: Admin (not superadmin) cannot modify admin or superadmin
         if (currentIsAdmin && !currentIsSuperAdmin && (targetIsAdmin || targetIsSuperAdmin)) {
             throw new UserNotAdmin("You are not authorized to modify another admin or superadmin.");
         }
 
-        // Rule 2: Superadmin cannot modify another superadmin unless it's themselves
         if (currentIsSuperAdmin && targetIsSuperAdmin && !userIsMyself) {
             throw new ForbiddenAction("You are not authorized to modify another superadmin.");
         }

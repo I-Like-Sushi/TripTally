@@ -3,7 +3,7 @@ package org.example.eindopdrachtbackend.admin.superadmin;
 import org.example.eindopdrachtbackend.admin.AdminModificationPolicy;
 import org.example.eindopdrachtbackend.admin.AdminService;
 import org.example.eindopdrachtbackend.auth.AuthValidationService;
-import org.example.eindopdrachtbackend.exception.auth.UserNotSuperAdmin;
+import org.example.eindopdrachtbackend.exception.user.UserNotSuperAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.User;
 import org.example.eindopdrachtbackend.user.UserMapper;
@@ -19,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/internal/superadmin-ops-9f3x7k")
@@ -125,7 +124,6 @@ public class SuperAdminController {
             log.warn("Superadmin override used by {} to update user {}", auth.getName(), id);
         }
 
-        // Ensure the entity has the correct ID before saving
         user.setId(id);
 
         userRepo.save(user);

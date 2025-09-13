@@ -26,6 +26,14 @@ public class UserMapper {
         return dto;
     }
 
+    public UserResponseDto restrictedView(User user) {
+        UserResponseDto dto = new UserResponseDto();
+        dto.setUsername(user.getUsername());
+        dto.setBio(user.getBio());
+        dto.setGender(user.getGender());
+        return dto;
+    }
+
     public User toEntity(UserRequestDto dto) {
         User user = new User();
         user.setUsername(dto.getUsername());
