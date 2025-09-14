@@ -20,6 +20,7 @@ public class UserMapper {
         dto.setDateOfBirth(user.getDateOfBirth());
         dto.setRoles(user.getRoles());
         dto.setEnabled(user.isEnabled());
+        dto.setAccountCreatedAt(user.getAccountCreatedAt());
         return dto;
     }
 

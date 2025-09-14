@@ -3,8 +3,10 @@ package org.example.eindopdrachtbackend.user;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,9 @@ public class User {
 
     private LocalDate dateOfBirth;
 
+    @CreationTimestamp
+    private LocalDateTime accountCreatedAt;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     private List<String> roles = new ArrayList<>();
@@ -33,6 +38,8 @@ public class User {
     private boolean enabled;
     private String gender;
     private String bio;
+
+
 
     public User() {};
 
@@ -80,5 +87,7 @@ public class User {
     }
     public void removeAllowedAccesView(String allowedAccesView) { this.allowedAccesView.remove(allowedAccesView); }
 
+    public LocalDateTime getAccountCreatedAt() { return accountCreatedAt; }
+    public void setAccountCreatedAt(LocalDateTime accountCreatedAt) { this.accountCreatedAt = accountCreatedAt; }
 
 }

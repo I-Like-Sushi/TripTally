@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
@@ -27,6 +28,9 @@ public class UserResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Past
     private LocalDate dateOfBirth;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime accountCreatedAt;
 
     @NotEmpty
     private List<String> roles;
@@ -71,6 +75,9 @@ public class UserResponseDto {
     public void setAllowViewingAccesTo(List<String> allowViewingAccesTo) { this.allowViewingAccesTo = allowViewingAccesTo; }
     public void addAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.add(allowViewingAccesTo); }
     public void removeAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.remove(allowViewingAccesTo); }
+
+    public LocalDateTime getAccountCreatedAt() { return accountCreatedAt; }
+    public void setAccountCreatedAt(LocalDateTime accountCreatedAt) { this.accountCreatedAt = accountCreatedAt; }
 
 }
 
