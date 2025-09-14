@@ -59,8 +59,6 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication auth) {
 
-        System.out.println(auth);
-
         if (auth == null || !auth.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
@@ -71,8 +69,10 @@ public class AuthController {
 
         UserResponseDto dto = userMapper.toDto(user);
 
+        dto.setAllowViewingAccesTo(user.getAllowViewingAccesTo());
+        // Admin not allowed to see who are friends with whom. Only super admins are allowed that privilege.
+
         return ResponseEntity.ok(dto);
 
     }
-
 }

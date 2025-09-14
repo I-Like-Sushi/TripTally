@@ -3,6 +3,8 @@ package org.example.eindopdrachtbackend.user.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserRequestDto {
 
@@ -34,6 +36,8 @@ public class UserRequestDto {
     private String gender;
     private String bio;
 
+    private List<String> allowViewingAccesTo = new ArrayList<>();
+
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
@@ -57,5 +61,16 @@ public class UserRequestDto {
 
     public LocalDate getDateOfBirth() { return dateOfBirth; }
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    public List<String> getAllowViewingAccesTo() { return allowViewingAccesTo; }
+    public void setAllowViewingAccesTo(List<String> allowViewingAccesTo) { this.allowViewingAccesTo = allowViewingAccesTo; }
+    public void addAllowViewingAccesTo(String username) {
+        if (!this.allowViewingAccesTo.contains(username)) {
+            this.allowViewingAccesTo.add(username);
+        }
+    }
+    public void removeAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.remove(allowViewingAccesTo); }
+
+
 }
 

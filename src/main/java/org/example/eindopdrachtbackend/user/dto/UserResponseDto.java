@@ -31,6 +31,8 @@ public class UserResponseDto {
     @NotEmpty
     private List<String> roles;
 
+    private List<String> allowViewingAccesTo;
+
     private String gender;
     private String bio;
     private boolean enabled;
@@ -64,6 +66,11 @@ public class UserResponseDto {
 
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
     public boolean getEnabled() { return enabled; }
+
+    public List<String> getAllowViewingAccesTo() { return allowViewingAccesTo; }
+    public void setAllowViewingAccesTo(List<String> allowViewingAccesTo) { this.allowViewingAccesTo = allowViewingAccesTo; }
+    public void addAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.add(allowViewingAccesTo); }
+    public void removeAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.remove(allowViewingAccesTo); }
 
 }
 

@@ -30,6 +30,8 @@ public class UserUpdateDto {
     )
     private String password;
 
+    private List<String> allowViewingAccesTo;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Past
     private LocalDate dateOfBirth;
@@ -60,6 +62,11 @@ public class UserUpdateDto {
 
     public LocalDate getDateOfBirth() { return dateOfBirth; }
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    public List<String> getAllowViewingAccesTo() { return allowViewingAccesTo; }
+    public void setAllowViewingAccesTo(List<String> allowViewingAccesTo) { this.allowViewingAccesTo = allowViewingAccesTo; }
+    public void addAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.add(allowViewingAccesTo); }
+    public void removeAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.remove(allowViewingAccesTo); }
 
 
 }

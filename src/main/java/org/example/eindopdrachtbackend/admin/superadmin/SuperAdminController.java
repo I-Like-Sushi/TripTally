@@ -45,7 +45,7 @@ public class SuperAdminController {
         this.adminModificationPolicy = adminModificationPolicy;
     }
 
-    @PostMapping("/createSuperAdmin")
+    @PostMapping("/create-super-admin")
     public ResponseEntity<UserResponseDto> createSuperAdmin(
             @RequestHeader("X-SUPERADMIN-SECRET") String providedSecret,
             @RequestBody UserRequestDto dto) {
@@ -59,7 +59,7 @@ public class SuperAdminController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/createAdmin")
+    @PostMapping("/create-admin")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<UserResponseDto> createAdmin(@RequestBody UserRequestDto dto, Authentication auth, @RequestParam Long superAdminId) {
 
@@ -70,7 +70,7 @@ public class SuperAdminController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/deleteAdmin/{id}")
+    @DeleteMapping("/delete-admin/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<String> deleteAdmin(@PathVariable Long id, Authentication auth, @RequestParam Long superAdminId, @RequestHeader(value = "X-SUPERADMIN-SECRET", required = false) String providedSecret) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
@@ -86,7 +86,7 @@ public class SuperAdminController {
         return ResponseEntity.ok("Superadmin override used by " + auth.getName() + " to delete user " + user.getUsername() + " with id " + user.getId());
     }
 
-    @GetMapping("/fetchAllUsers")
+    @GetMapping("/fetch-all-users")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public List<User> fetchAllUsers(Authentication auth, @RequestParam Long superAdminId) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);

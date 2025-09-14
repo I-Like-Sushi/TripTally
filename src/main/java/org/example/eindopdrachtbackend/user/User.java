@@ -28,6 +28,7 @@ public class User {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     private List<String> roles = new ArrayList<>();
 
+    private List<String> allowViewingAccesTo = new ArrayList<>();
 
     private boolean enabled;
     private String gender;
@@ -70,6 +71,14 @@ public class User {
     public void addRoles(String roles) { this.roles.add(roles); }
     public void removeRoles(String roles) { this.roles.remove(roles); }
 
+    public List<String> getAllowViewingAccesTo() { return allowViewingAccesTo; }
+    public void setAllowViewingAccesTo(List<String> allowViewingAccesTo) { this.allowViewingAccesTo = allowViewingAccesTo; }
+    public void addAllowViewingAccesTo(String username) {
+        if (!this.allowViewingAccesTo.contains(username)) {
+            this.allowViewingAccesTo.add(username);
+        }
+    }
+    public void removeAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.remove(allowViewingAccesTo); }
 
 
 }

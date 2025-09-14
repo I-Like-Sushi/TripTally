@@ -53,7 +53,7 @@ public class AdminController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/fetchAllUsers")
+    @GetMapping("/fetch-all-users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDto>> getAllUsers(Authentication auth, @RequestParam long adminId) {
         authValidationService.validateSelfOrThrow(adminId, auth);

@@ -5,9 +5,6 @@ import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
 import org.example.eindopdrachtbackend.user.dto.UserUpdateDto;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Component
 public class UserMapper {
 
@@ -29,8 +26,15 @@ public class UserMapper {
     public UserResponseDto restrictedView(User user) {
         UserResponseDto dto = new UserResponseDto();
         dto.setUsername(user.getUsername());
+        return dto;
+    }
+
+    public UserResponseDto allowedAccesView(User user) {
+        UserResponseDto dto = new UserResponseDto();
+        dto.setUsername(user.getUsername());
         dto.setBio(user.getBio());
         dto.setGender(user.getGender());
+        dto.setDateOfBirth(user.getDateOfBirth());
         return dto;
     }
 
@@ -57,5 +61,6 @@ public class UserMapper {
         if (dto.getGender() != null) user.setGender(dto.getGender());
         if (dto.getDateOfBirth() != null) user.setDateOfBirth(dto.getDateOfBirth());
     }
+
 
 }

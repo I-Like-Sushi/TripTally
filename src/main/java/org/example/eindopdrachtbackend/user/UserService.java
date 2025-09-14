@@ -1,6 +1,9 @@
 package org.example.eindopdrachtbackend.user;
 
+import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,6 +40,41 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
         return user;
     }
+
+    public boolean grantViewingAccess(Authentication auth, User targetUser) {
+        User loggedInUser = userRepo.findByUsername(auth.getName())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        boolean alreadyAllowed = targetUser.getAllowViewingAccesTo()
+                .contains(loggedInUser.getUsername());
+
+        if (!alreadyAllowed) {
+            targetUser.addAllowViewingAccesTo(loggedInUser.getUsername());
+            loggedInUser.addAllowViewingAccesTo(targetUser.getUsername());
+            userRepo.save(targetUser);
+            userRepo.save(loggedInUser);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeViewerAccess(Authentication auth, User targetUser) {
+        User loggedInUser = userRepo.findByUsername(auth.getName())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        boolean currentlyAllowed = targetUser.getAllowViewingAccesTo()
+                .contains(loggedInUser.getUsername());
+
+        if (currentlyAllowed) {
+            targetUser.removeAllowViewingAccesTo(loggedInUser.getUsername());
+            loggedInUser.removeAllowViewingAccesTo(targetUser.getUsername());
+            userRepo.save(targetUser);
+            userRepo.save(loggedInUser);
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) {
