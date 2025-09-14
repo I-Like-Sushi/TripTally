@@ -69,7 +69,7 @@ public class AuthController {
 
         UserResponseDto dto = userMapper.toDto(user);
 
-        dto.setAllowViewingAccesTo(user.getAllowViewingAccesTo());
+        dto.setAllowViewingAccesTo(user.getAllowedAccesView());
         // Admin not allowed to see who are friends with whom. Only super admins are allowed that privilege.
 
         return ResponseEntity.ok(dto);

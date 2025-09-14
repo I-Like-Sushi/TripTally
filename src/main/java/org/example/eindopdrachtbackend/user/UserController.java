@@ -77,7 +77,7 @@ public class UserController {
         User targetUser = userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        boolean hasViewingPermission = targetUser.getAllowViewingAccesTo()
+        boolean hasViewingPermission = targetUser.getAllowedAccesView()
                 .contains(loggedInUser.getUsername());
 
         return hasViewingPermission

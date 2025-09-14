@@ -2,7 +2,6 @@ package org.example.eindopdrachtbackend.user;
 
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,12 +44,12 @@ public class UserService implements UserDetailsService {
         User loggedInUser = userRepo.findByUsername(auth.getName())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        boolean alreadyAllowed = targetUser.getAllowViewingAccesTo()
+        boolean alreadyAllowed = targetUser.getAllowedAccesView()
                 .contains(loggedInUser.getUsername());
 
         if (!alreadyAllowed) {
-            targetUser.addAllowViewingAccesTo(loggedInUser.getUsername());
-            loggedInUser.addAllowViewingAccesTo(targetUser.getUsername());
+            targetUser.addAllowedAccesView(loggedInUser.getUsername());
+            loggedInUser.addAllowedAccesView(targetUser.getUsername());
             userRepo.save(targetUser);
             userRepo.save(loggedInUser);
             return true;
@@ -62,12 +61,12 @@ public class UserService implements UserDetailsService {
         User loggedInUser = userRepo.findByUsername(auth.getName())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        boolean currentlyAllowed = targetUser.getAllowViewingAccesTo()
+        boolean currentlyAllowed = targetUser.getAllowedAccesView()
                 .contains(loggedInUser.getUsername());
 
         if (currentlyAllowed) {
-            targetUser.removeAllowViewingAccesTo(loggedInUser.getUsername());
-            loggedInUser.removeAllowViewingAccesTo(targetUser.getUsername());
+            targetUser.removeAllowedAccesView(loggedInUser.getUsername());
+            loggedInUser.removeAllowedAccesView(targetUser.getUsername());
             userRepo.save(targetUser);
             userRepo.save(loggedInUser);
             return true;
