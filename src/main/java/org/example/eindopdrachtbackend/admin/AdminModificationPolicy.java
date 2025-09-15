@@ -4,7 +4,7 @@ import org.example.eindopdrachtbackend.exception.auth.ForbiddenAction;
 import org.example.eindopdrachtbackend.exception.user.UserNotAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.User;
-import org.example.eindopdrachtbackend.user.UserRepo;
+import org.example.eindopdrachtbackend.user.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -14,17 +14,17 @@ import java.util.Collection;
 @Service
 public class AdminModificationPolicy {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
 
-    public AdminModificationPolicy(UserRepo userRepo) {
-        this.userRepo = userRepo;
+    public AdminModificationPolicy(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public void enforce(Authentication auth, Long targetUserId) {
-        User targetUser = userRepo.findById(targetUserId)
+        User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        Long currentUserId = userRepo.findByUsername(auth.getName())
+        Long currentUserId = userRepository.findByUsername(auth.getName())
                 .map(User::getId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 

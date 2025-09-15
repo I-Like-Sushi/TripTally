@@ -4,7 +4,7 @@ import org.example.eindopdrachtbackend.auth.AuthValidationService;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.User;
 import org.example.eindopdrachtbackend.user.UserMapper;
-import org.example.eindopdrachtbackend.user.UserRepo;
+import org.example.eindopdrachtbackend.user.UserRepository;
 import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
 import org.example.eindopdrachtbackend.user.dto.UserUpdateDto;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,13 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
     private final AuthValidationService authValidationService;
     private final AdminModificationPolicy adminModificationPolicy;
     private final UserMapper userMapper;
 
-    public AdminController(UserRepo userRepo, AuthValidationService authValidationService, AdminModificationPolicy adminModificationPolicy, UserMapper userMapper) {
-        this.userRepo = userRepo;
+    public AdminController(UserRepository userRepository, AuthValidationService authValidationService, AdminModificationPolicy adminModificationPolicy, UserMapper userMapper) {
+        this.userRepository = userRepository;
         this.authValidationService = authValidationService;
         this.adminModificationPolicy = adminModificationPolicy;
         this.userMapper = userMapper;
@@ -37,7 +37,7 @@ public class AdminController {
         adminModificationPolicy.enforce(auth, id);
 
         String username = auth.getName();
-        userRepo.deleteById(id);
+        userRepository.deleteById(id);
         return ResponseEntity.ok("Account of " + username + " deleted successfully");
     }
 
@@ -46,7 +46,7 @@ public class AdminController {
     public ResponseEntity<UserResponseDto> getAccount(@PathVariable Long id, Authentication auth, @RequestParam long adminId) {
         authValidationService.validateSelfOrThrow(adminId, auth);
 
-        User user = userRepo.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User unknown"));
 
         UserResponseDto dto = userMapper.toDto(user);
@@ -57,7 +57,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDto>> getAllUsers(Authentication auth, @RequestParam long adminId) {
         authValidationService.validateSelfOrThrow(adminId, auth);
-        List<UserResponseDto> AllAccountsToDto = userRepo.findAll().stream()
+        List<UserResponseDto> AllAccountsToDto = userRepository.findAll().stream()
                 .map(userMapper::toDto)
                 .toList();
 
@@ -73,11 +73,11 @@ public class AdminController {
 
         adminModificationPolicy.enforce(auth, id);
 
-        User targetUser = userRepo.findById(id)
+        User targetUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         userMapper.updateEntityFromDto(dto, targetUser);
-        userRepo.save(targetUser);
+        userRepository.save(targetUser);
 
         return ResponseEntity.ok(userMapper.toDto(targetUser));
     }

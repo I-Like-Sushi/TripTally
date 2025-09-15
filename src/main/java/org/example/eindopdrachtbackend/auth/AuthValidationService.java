@@ -1,7 +1,7 @@
 package org.example.eindopdrachtbackend.auth;
 
 import org.example.eindopdrachtbackend.user.User;
-import org.example.eindopdrachtbackend.user.UserRepo;
+import org.example.eindopdrachtbackend.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -10,10 +10,10 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class AuthValidationService {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
 
-    public AuthValidationService(UserRepo userRepo) {
-        this.userRepo = userRepo;
+    public AuthValidationService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public void validateSelfOrThrow(Long targetId, Authentication authentication) {
@@ -22,7 +22,7 @@ public class AuthValidationService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
 
-        User currentUser = userRepo.findByUsername(authentication.getName())
+        User currentUser = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Current user not found"));
 
         if (!currentUser.getId().equals(targetId)) {

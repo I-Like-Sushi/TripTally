@@ -1,7 +1,6 @@
 package org.example.eindopdrachtbackend.security;
 
-import jakarta.annotation.PostConstruct;
-import org.example.eindopdrachtbackend.user.UserRepo;
+import org.example.eindopdrachtbackend.user.UserRepository;
 import org.example.eindopdrachtbackend.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,15 +15,15 @@ import java.util.stream.Collectors;
 @Service
 public class AppUserDetailsService implements UserDetailsService {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
 
-    public AppUserDetailsService(UserRepo userRepo) {
-        this.userRepo = userRepo;
+    public AppUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
         List<GrantedAuthority> authorities = user.getRoles().stream()

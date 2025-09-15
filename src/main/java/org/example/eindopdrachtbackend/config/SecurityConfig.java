@@ -58,7 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/login",
                                 "/api/users/register",
-                                "/api/internal/superadmin-ops-9f3x7k/createSuperAdmin"
+                                "/api/internal/superadmin-ops-9f3x7k/create-super-admin"
                         ).permitAll()
 
                         .requestMatchers(

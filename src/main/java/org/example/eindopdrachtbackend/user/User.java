@@ -1,8 +1,7 @@
 package org.example.eindopdrachtbackend.user;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import org.example.eindopdrachtbackend.travel.model.Trip;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -15,33 +14,67 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(updatable = false, nullable = false)
+    private Long id;
 
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
+
+    @Column(nullable = false, length = 100)
     private String firstName;
+
+    @Column(nullable = false, length = 100)
     private String lastName;
+
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime accountCreatedAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
     private List<String> roles = new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name = "user_allowed_access", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "allowed_username")
     private List<String> allowedAccesView = new ArrayList<>();
 
     private boolean enabled;
     private String gender;
     private String bio;
 
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Trip> trips = new ArrayList<>();
 
     public User() {};
+
+    public List<Trip> getTrips() { return trips; }
+
+    public void setTrips(List<Trip> trips) {
+        this.trips.clear();
+        if (trips != null) {
+            trips.forEach(this::addTrip);
+        }
+    }
+
+    public void addTrip(Trip trip) {
+        trips.add(trip);
+        trip.setUser(this);
+    }
+
+    public void removeTrip(Trip trip) {
+        trips.remove(trip);
+        trip.setUser(null);
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

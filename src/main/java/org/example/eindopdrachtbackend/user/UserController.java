@@ -1,5 +1,6 @@
 package org.example.eindopdrachtbackend.user;
 
+import jakarta.validation.Valid;
 import org.example.eindopdrachtbackend.auth.AuthValidationService;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
@@ -10,28 +11,30 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final AuthValidationService authValidationService;
 
-    public UserController(UserService userService, UserRepo userRepo, UserMapper userMapper, AuthValidationService authValidationService) {
+    public UserController(UserService userService, UserRepository userRepository, UserMapper userMapper, AuthValidationService authValidationService) {
         this.userService = userService;
-        this.userRepo = userRepo;
+        this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.authValidationService = authValidationService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto dto) {
         User newUser = userService.createUser(dto);
         UserResponseDto responseDto = userMapper.toDto(newUser);
-        System.out.println(responseDto);
-        return ResponseEntity.ok(responseDto);
+        URI location = URI.create("/users/" + newUser.getId());
+        return ResponseEntity.created(location).body(responseDto);
     }
 
     @PutMapping("/{id}")
@@ -44,11 +47,11 @@ public class UserController {
         // Only self-update allowed
         authValidationService.validateSelfOrThrow(id, auth);
 
-        User user = userRepo.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         userMapper.updateEntityFromDto(dto, user);
-        userRepo.save(user);
+        userRepository.save(user);
 
         return ResponseEntity.ok(userMapper.toDto(user));
     }
@@ -58,9 +61,9 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> deleteUser(@PathVariable Long id, Authentication auth) {
         authValidationService.validateSelfOrThrow(id, auth);
-        User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         String response = "User " + user.getUsername() + " has successfully been deleted.";
-        userRepo.delete(user);
+        userRepository.delete(user);
         return ResponseEntity.ok(response);
     }
 
@@ -71,10 +74,10 @@ public class UserController {
 
         authValidationService.validateSelfOrThrow(loggedInUserId, auth);
 
-        User loggedInUser = userRepo.findByUsername(auth.getName())
+        User loggedInUser = userRepository.findByUsername(auth.getName())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        User targetUser = userRepo.findById(id)
+        User targetUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean hasViewingPermission = targetUser.getAllowedAccesView()
@@ -91,7 +94,7 @@ public class UserController {
             @PathVariable Long id, Authentication auth, @RequestParam Long loggedInUserId) {
 
         authValidationService.validateSelfOrThrow(loggedInUserId, auth);
-        User targetUser = userRepo.findById(id)
+        User targetUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean granted = userService.grantViewingAccess(auth, targetUser);
@@ -107,7 +110,7 @@ public class UserController {
             @PathVariable Long id, Authentication auth, @RequestParam Long loggedInUserId) {
 
         authValidationService.validateSelfOrThrow(loggedInUserId, auth);
-        User targetUser = userRepo.findById(id)
+        User targetUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean removed = userService.removeViewerAccess(auth, targetUser);

@@ -1,5 +1,6 @@
 package org.example.eindopdrachtbackend.user;
 
+import org.example.eindopdrachtbackend.travel.TripMapper.TripMapper;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
 import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
 import org.example.eindopdrachtbackend.user.dto.UserUpdateDto;
@@ -7,6 +8,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
+
+    private final TripMapper tripMapper;
+
+    public UserMapper(TripMapper tripMapper) {
+        this.tripMapper = tripMapper;
+    }
 
     public UserResponseDto toDto(User user) {
         UserResponseDto dto = new UserResponseDto();
@@ -36,6 +43,9 @@ public class UserMapper {
         dto.setBio(user.getBio());
         dto.setGender(user.getGender());
         dto.setDateOfBirth(user.getDateOfBirth());
+        dto.setTrips(user.getTrips().stream()
+                .map(tripMapper::toDto)
+                .toList());
         return dto;
     }
 

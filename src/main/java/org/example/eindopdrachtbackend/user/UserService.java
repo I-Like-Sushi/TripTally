@@ -1,5 +1,6 @@
 package org.example.eindopdrachtbackend.user;
 
+import jakarta.transaction.Transactional;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,30 +20,43 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final SecureRandom random = new SecureRandom();
 
-    public UserService(UserRepo userRepo, UserMapper userMapper, PasswordEncoder passwordEncoder) {
-        this.userRepo = userRepo;
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
+    public long generateUniqueId() {
+        long id;
+        do {
+            id = generateRandom12DigitNumber();
+        } while (userRepository.existsById(id));
+        return id;
+    }
+
+    private long generateRandom12DigitNumber() {
+        return 100_000_000_000L + (Math.abs(random.nextLong()) % 900_000_000_000L);
+    }
+
+    @Transactional
     public User createUser(UserRequestDto dto) {
-        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
-
         User user = userMapper.toEntity(dto);
-
-        user.setPassword(encryptedPassword);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setEnabled(true);
         user.addRoles("ROLE_USER");
-        userRepo.save(user);
-        return user;
+        if (user.getId() == null) {
+            user.setId(generateUniqueId());
+        }
+        return userRepository.save(user);
     }
 
     public boolean grantViewingAccess(Authentication auth, User targetUser) {
-        User loggedInUser = userRepo.findByUsername(auth.getName())
+        User loggedInUser = userRepository.findByUsername(auth.getName())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean alreadyAllowed = targetUser.getAllowedAccesView()
@@ -50,15 +65,15 @@ public class UserService implements UserDetailsService {
         if (!alreadyAllowed) {
             targetUser.addAllowedAccesView(loggedInUser.getUsername());
             loggedInUser.addAllowedAccesView(targetUser.getUsername());
-            userRepo.save(targetUser);
-            userRepo.save(loggedInUser);
+            userRepository.save(targetUser);
+            userRepository.save(loggedInUser);
             return true;
         }
         return false;
     }
 
     public boolean removeViewerAccess(Authentication auth, User targetUser) {
-        User loggedInUser = userRepo.findByUsername(auth.getName())
+        User loggedInUser = userRepository.findByUsername(auth.getName())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean currentlyAllowed = targetUser.getAllowedAccesView()
@@ -67,8 +82,8 @@ public class UserService implements UserDetailsService {
         if (currentlyAllowed) {
             targetUser.removeAllowedAccesView(loggedInUser.getUsername());
             loggedInUser.removeAllowedAccesView(targetUser.getUsername());
-            userRepo.save(targetUser);
-            userRepo.save(loggedInUser);
+            userRepository.save(targetUser);
+            userRepository.save(loggedInUser);
             return true;
         }
         return false;
@@ -77,7 +92,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepo.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         List<GrantedAuthority> authorities = user.getRoles().stream()

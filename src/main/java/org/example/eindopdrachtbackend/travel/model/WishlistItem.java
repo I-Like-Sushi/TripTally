@@ -14,10 +14,10 @@ public class WishlistItem {
 
     private String description;
 
-    @Column(name = "estimated_cost_local")
-    private BigDecimal estimatedCostLocal;
-    @Column(name = "estimated_cost_home")
-    private BigDecimal estimatedCostHome;
+    @Column(name = "amount_local")
+    private BigDecimal amountLocal;
+    @Column(name = "amount_home")
+    private BigDecimal amountHome;
 
     private boolean purchased = false;
 
@@ -39,11 +39,11 @@ public class WishlistItem {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public BigDecimal getEstimatedCostLocal() { return estimatedCostLocal; }
-    public void setEstimatedCostLocal(BigDecimal estimatedCostLocal) { this.estimatedCostLocal = estimatedCostLocal; }
+    public BigDecimal getAmountLocal() { return amountLocal; }
+    public void setAmountLocal(BigDecimal amountLocal) { this.amountLocal = amountLocal; }
 
-    public BigDecimal getEstimatedCostHome() { return estimatedCostHome; }
-    public void setEstimatedCostHome(BigDecimal estimatedCostHome) { this.estimatedCostHome = estimatedCostHome; }
+    public BigDecimal getAmountHome() { return amountHome; }
+    public void setAmountHome(BigDecimal amountHome) { this.amountHome = amountHome; }
 
     public boolean isPurchased() { return purchased; }
     public void setPurchased(boolean purchased) { this.purchased = purchased; }

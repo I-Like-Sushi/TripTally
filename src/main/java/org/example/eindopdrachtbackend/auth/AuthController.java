@@ -5,9 +5,10 @@ import org.example.eindopdrachtbackend.auth.dto.LoginResponseDto;
 import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.security.JwtService;
+import org.example.eindopdrachtbackend.travel.TripMapper.TripMapper;
 import org.example.eindopdrachtbackend.user.User;
 import org.example.eindopdrachtbackend.user.UserMapper;
-import org.example.eindopdrachtbackend.user.UserRepo;
+import org.example.eindopdrachtbackend.user.UserRepository;
 import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,14 +25,16 @@ public class AuthController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
+    private final TripMapper tripMapper;
 
 
-    public AuthController(JwtService jwtService, AuthenticationManager authenticationManager, UserMapper userMapper, UserRepo userRepo) {
+    public AuthController(JwtService jwtService, AuthenticationManager authenticationManager, UserMapper userMapper, UserRepository userRepository, TripMapper tripMapper) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.userMapper = userMapper;
-        this.userRepo = userRepo;
+        this.userRepository = userRepository;
+        this.tripMapper = tripMapper;
     }
 
     @PostMapping("/login")
@@ -64,13 +67,16 @@ public class AuthController {
         }
 
         String username = auth.getName();
-        User user = userRepo.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         UserResponseDto dto = userMapper.toDto(user);
 
         dto.setAllowViewingAccesTo(user.getAllowedAccesView());
-        // Admin not allowed to see who are friends with whom. Only super admins are allowed that privilege.
+        dto.setTrips(user.getTrips().stream()
+                .map(tripMapper::toDto)
+                .toList());
+        // Admin not allowed to see who are friends with whom and what the active trips are. Only super admins are allowed that privilege.
 
         return ResponseEntity.ok(dto);
 

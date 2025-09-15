@@ -21,10 +21,10 @@ public class Expense {
     @Column(name = "amount_home")
     private BigDecimal amountHome;
 
-    private LocalDate date; // expense date
+    private LocalDate date;
 
     @CreationTimestamp
-    private LocalDateTime timeStamp; // auto-set when persisted
+    private LocalDateTime timeStamp;
 
     @Enumerated(EnumType.STRING)
     private Category category;

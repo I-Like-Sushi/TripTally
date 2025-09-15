@@ -3,6 +3,7 @@ package org.example.eindopdrachtbackend.user.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
+import org.example.eindopdrachtbackend.travel.dto.trip.TripResponseDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +42,8 @@ public class UserResponseDto {
     private String bio;
     private boolean enabled;
 
+    private List<TripResponseDto> trips;
+
     public void setId(Long id) { this.id = id; }
     public Long getId() { return id; }
 
@@ -78,6 +81,10 @@ public class UserResponseDto {
 
     public LocalDateTime getAccountCreatedAt() { return accountCreatedAt; }
     public void setAccountCreatedAt(LocalDateTime accountCreatedAt) { this.accountCreatedAt = accountCreatedAt; }
+
+    public List<TripResponseDto> getTrips() { return trips; }
+
+    public void setTrips(List<TripResponseDto> trips) { this.trips = trips; }
 
 }
 

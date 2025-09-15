@@ -1,20 +1,24 @@
 package org.example.eindopdrachtbackend.travel.model;
 
 import jakarta.persistence.*;
+import org.example.eindopdrachtbackend.user.User;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "trips")
+@Table(name = "trip")
 public class Trip {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(updatable = false, nullable = false)
+    private String id;
 
+    @Column(nullable = false)
     private String destination;
+
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -27,11 +31,18 @@ public class Trip {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistItem> wishlistItems = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
+
     public Trip() {}
 
-    // --- Getters & Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getDestination() { return destination; }
     public void setDestination(String destination) { this.destination = destination; }
@@ -64,24 +75,23 @@ public class Trip {
         }
     }
 
-    // --- Relationship helpers ---
     public void addExpense(Expense expense) {
         expenses.add(expense);
-        expense.setTrip(this); // keep owning side in sync
+        expense.setTrip(this);
     }
 
     public void removeExpense(Expense expense) {
         expenses.remove(expense);
-        expense.setTrip(null); // break the link
+        expense.setTrip(null);
     }
 
     public void addWishlistItem(WishlistItem item) {
         wishlistItems.add(item);
-        item.setTrip(this); // keep owning side in sync
+        item.setTrip(this);
     }
 
     public void removeWishlistItem(WishlistItem item) {
         wishlistItems.remove(item);
-        item.setTrip(null); // break the link
+        item.setTrip(null);
     }
 }
