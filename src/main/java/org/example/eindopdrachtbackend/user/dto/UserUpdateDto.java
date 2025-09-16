@@ -1,7 +1,6 @@
 package org.example.eindopdrachtbackend.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
