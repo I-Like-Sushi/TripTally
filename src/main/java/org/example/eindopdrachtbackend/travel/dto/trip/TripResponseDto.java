@@ -3,16 +3,18 @@ package org.example.eindopdrachtbackend.travel.dto.trip;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Positive;
+import org.example.eindopdrachtbackend.travel.dto.expense.ExpenseResponseDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TripResponseDto {
 
     private String tripId;
-
     private String destination;
-
     private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -22,8 +24,17 @@ public class TripResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Future
     private LocalDate endDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tripCreatedDate;
+
+    @Positive(message = "Budget in home currency must be positive")
     private BigDecimal budgetHomeCurrency;
+
+    @Positive(message = "Budget in local currency must be positive")
     private BigDecimal budgetLocalCurrency;
+
+    private List<ExpenseResponseDto> expenses = new ArrayList<>();
 
     public String getTripId() { return tripId; }
     public void setTripId(String tripId) { this.tripId = tripId; }
@@ -40,10 +51,15 @@ public class TripResponseDto {
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 
+    public LocalDate getTripCreatedDate() { return tripCreatedDate; }
+    public void setTripCreatedDate(LocalDate tripCreatedDate) { this.tripCreatedDate = tripCreatedDate; }
+
     public BigDecimal getBudgetHomeCurrency() { return budgetHomeCurrency; }
     public void setBudgetHomeCurrency(BigDecimal budgetHomeCurrency) { this.budgetHomeCurrency = budgetHomeCurrency; }
 
     public BigDecimal getBudgetLocalCurrency() { return budgetLocalCurrency; }
     public void setBudgetLocalCurrency(BigDecimal budgetLocalCurrency) { this.budgetLocalCurrency = budgetLocalCurrency; }
-}
 
+    public List<ExpenseResponseDto> getExpenses() { return expenses; }
+    public void setExpenses(List<ExpenseResponseDto> expenses) { this.expenses = expenses != null ? new ArrayList<>(expenses) : new ArrayList<>(); }
+}

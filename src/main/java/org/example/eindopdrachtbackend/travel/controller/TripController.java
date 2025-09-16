@@ -2,10 +2,10 @@ package org.example.eindopdrachtbackend.travel.controller;
 
 import jakarta.validation.Valid;
 import org.example.eindopdrachtbackend.auth.AuthValidationService;
-import org.example.eindopdrachtbackend.exception.auth.UnauthorizedException;
 import org.example.eindopdrachtbackend.exception.trip.TripNotFoundException;
 import org.example.eindopdrachtbackend.travel.dto.trip.TripRequestDto;
 import org.example.eindopdrachtbackend.travel.dto.trip.TripResponseDto;
+import org.example.eindopdrachtbackend.travel.dto.trip.TripUpdateDto;
 import org.example.eindopdrachtbackend.travel.model.Trip;
 import org.example.eindopdrachtbackend.travel.repository.TripRepository;
 import org.example.eindopdrachtbackend.travel.service.TripService;
@@ -80,6 +80,19 @@ public class TripController {
     }
 
     @PutMapping("/{tripId}")
+    public ResponseEntity<TripResponseDto> updateTrip(@PathVariable Long userId,
+                                                      @Valid @RequestBody TripUpdateDto dto,
+                                                      Authentication auth,
+                                                      @PathVariable String tripId) {
+        authValidationService.validateSelfOrThrow(userId, auth);
+
+        Trip trip = tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found."));
+
+        tripMapper.updateEntityFromDto(dto, trip);
+        tripRepository.save(trip);
+        return ResponseEntity.ok(tripMapper.toDto(trip));
+    }
+
 
 
 }

@@ -2,6 +2,7 @@ package org.example.eindopdrachtbackend.travel.model;
 
 import jakarta.persistence.*;
 import org.example.eindopdrachtbackend.user.User;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,6 +27,10 @@ public class Trip {
 
     private BigDecimal budgetHomeCurrency;
     private BigDecimal budgetLocalCurrency;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDate tripCreatedDate;
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();
@@ -72,14 +77,6 @@ public class Trip {
         }
     }
 
-    public List<WishlistItem> getWishlistItems() { return wishlistItems; }
-    public void setWishlistItems(List<WishlistItem> wishlistItems) {
-        this.wishlistItems.clear();
-        if (wishlistItems != null) {
-            wishlistItems.forEach(this::addWishlistItem);
-        }
-    }
-
     public void addExpense(Expense expense) {
         expenses.add(expense);
         expense.setTrip(this);
@@ -88,6 +85,14 @@ public class Trip {
     public void removeExpense(Expense expense) {
         expenses.remove(expense);
         expense.setTrip(null);
+    }
+
+    public List<WishlistItem> getWishlistItems() { return wishlistItems; }
+    public void setWishlistItems(List<WishlistItem> wishlistItems) {
+        this.wishlistItems.clear();
+        if (wishlistItems != null) {
+            wishlistItems.forEach(this::addWishlistItem);
+        }
     }
 
     public void addWishlistItem(WishlistItem item) {
@@ -99,4 +104,8 @@ public class Trip {
         wishlistItems.remove(item);
         item.setTrip(null);
     }
+
+    public LocalDate getTripCreatedDate() { return tripCreatedDate; }
+    public void setTripCreatedDate(LocalDate tripCreatedDate) { this.tripCreatedDate = tripCreatedDate; }
+
 }
