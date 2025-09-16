@@ -53,7 +53,7 @@ public class TripController {
         return ResponseEntity.created(location).body(responseDto);
     }
 
-    @GetMapping("/{targetId}/{tripId}")
+    @GetMapping("/{targetId}/{tripId}")  // the logged-in user can get his own data from "/auth/me"
     public ResponseEntity<TripResponseDto> getTrip(
             @PathVariable Long userId,
             @PathVariable Long targetId,
