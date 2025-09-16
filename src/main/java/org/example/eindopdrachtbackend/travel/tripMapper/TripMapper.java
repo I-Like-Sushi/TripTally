@@ -1,4 +1,4 @@
-package org.example.eindopdrachtbackend.travel.TripMapper;
+package org.example.eindopdrachtbackend.travel.tripMapper;
 
 import org.example.eindopdrachtbackend.travel.dto.trip.TripRequestDto;
 import org.example.eindopdrachtbackend.travel.dto.trip.TripResponseDto;
@@ -10,8 +10,9 @@ public class TripMapper {
 
     public TripResponseDto toDto(Trip trip) {
         TripResponseDto dto = new TripResponseDto();
-        dto.setId(trip.getId());
+        dto.setTripId(trip.getTripId());
         dto.setDestination(trip.getDestination());
+        dto.setDescription(trip.getDescription());
         dto.setStartDate(trip.getStartDate());
         dto.setEndDate(trip.getEndDate());
         dto.setBudgetHomeCurrency(trip.getBudgetHomeCurrency());
@@ -22,6 +23,7 @@ public class TripMapper {
     public Trip toEntity(TripRequestDto dto) {
         Trip trip = new Trip();
         trip.setDestination(dto.getDestination());
+        trip.setDescription(dto.getDescription());
         trip.setStartDate(dto.getStartDate());
         trip.setEndDate(dto.getEndDate());
         trip.setBudgetHomeCurrency(dto.getBudgetHomeCurrency());

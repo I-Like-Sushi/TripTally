@@ -2,7 +2,7 @@ package org.example.eindopdrachtbackend.travel.service;
 
 import jakarta.transaction.Transactional;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
-import org.example.eindopdrachtbackend.travel.TripMapper.TripMapper;
+import org.example.eindopdrachtbackend.travel.tripMapper.TripMapper;
 import org.example.eindopdrachtbackend.travel.dto.trip.TripRequestDto;
 import org.example.eindopdrachtbackend.travel.model.Trip;
 import org.example.eindopdrachtbackend.travel.repository.TripRepository;
@@ -26,8 +26,8 @@ public class TripService {
     }
 
     @Transactional
-    public Trip createTrip(TripRequestDto dto) {
-        User user = userRepository.findById(dto.getUserId())
+    public Trip createTrip(Long userId, TripRequestDto dto) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Trip trip = tripMapper.toEntity(dto);
@@ -38,7 +38,7 @@ public class TripService {
                 trip.getStartDate().toString().replaceAll("-", "") + "_" +
                 UUID.randomUUID().toString().substring(0, 6);
 
-        trip.setId(tripId);
+        trip.setTripId(tripId);
 
         return tripRepository.save(trip);
     }

@@ -55,6 +55,20 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public boolean hasViewingAccess(Authentication auth, Long targetId) {
+
+        User loggedInUser = userRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        User targetUser = userRepository.findById(targetId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        boolean hasViewingPermission = targetUser.getAllowedAccesView()
+                .contains(loggedInUser.getUsername());
+
+        return hasViewingPermission;
+    }
+
     public boolean grantViewingAccess(Authentication auth, User targetUser) {
         User loggedInUser = userRepository.findByUsername(auth.getName())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

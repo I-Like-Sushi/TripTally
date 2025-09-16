@@ -5,7 +5,7 @@ import org.example.eindopdrachtbackend.auth.dto.LoginResponseDto;
 import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
 import org.example.eindopdrachtbackend.security.JwtService;
-import org.example.eindopdrachtbackend.travel.TripMapper.TripMapper;
+import org.example.eindopdrachtbackend.travel.tripMapper.TripMapper;
 import org.example.eindopdrachtbackend.user.User;
 import org.example.eindopdrachtbackend.user.UserMapper;
 import org.example.eindopdrachtbackend.user.UserRepository;

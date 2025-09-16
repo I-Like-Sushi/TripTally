@@ -62,7 +62,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(
-                                "/api/admin/{id}",
+                                "/api/admin/*",
                                 "/api/admin/fetchAllUsers"
                         ).hasRole("ADMIN")
 
@@ -71,7 +71,8 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/auth/me",
-                                "/api/users/{id}"
+                                "/api/users/*",
+                                "/api/users/*/trips/**"
                         ).authenticated()
 
                         .anyRequest().authenticated()

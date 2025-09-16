@@ -19,10 +19,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/internal/superadmin-ops-9f3x7k")
+@RequestMapping("/api/internal/superadmin-ops-9f3x7k") // super admin safe address.
 public class SuperAdminController {
 
     private final SuperAdminService superAdminService;
@@ -57,7 +58,8 @@ public class SuperAdminController {
 
         User newUser = superAdminService.createSuperAdmin(dto);
         UserResponseDto responseDto = userMapper.toDto(newUser);
-        return ResponseEntity.ok(responseDto);
+        URI location = URI.create("/internal/superadmin-ops-9f3x7k/" + newUser.getId());
+        return ResponseEntity.created(location).body(responseDto);
     }
 
     @PostMapping("/create-admin")
@@ -68,7 +70,8 @@ public class SuperAdminController {
 
         User newUser = adminService.createAdmin(dto);
         UserResponseDto responseDto = userMapper.toDto(newUser);
-        return ResponseEntity.ok(responseDto);
+        URI location = URI.create("/internal/superadmin-ops-9f3x7k/" + newUser.getId());
+        return ResponseEntity.created(location).body(responseDto);
     }
 
     @DeleteMapping("/delete-admin/{id}")

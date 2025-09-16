@@ -1,10 +1,12 @@
 package org.example.eindopdrachtbackend.security;
 
 import io.micrometer.common.lang.NonNull;
+import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +30,27 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
         this.appUserDetailsService = appUserDetailsService;
     }
+
+    @Bean
+    public Filter loggingFilter() {
+        return new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+                    throws ServletException, IOException {
+                var auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth != null) {
+                    System.out.println("Path: " + req.getRequestURI()
+                            + " | Authenticated: " + auth.isAuthenticated()
+                            + " | Principal: " + auth.getName()
+                            + " | Authorities: " + auth.getAuthorities());
+                } else {
+                    System.out.println("Path: " + req.getRequestURI() + " | No authentication in context");
+                }
+                chain.doFilter(req, res);
+            }
+        };
+    }
+
 
 
     @Override
