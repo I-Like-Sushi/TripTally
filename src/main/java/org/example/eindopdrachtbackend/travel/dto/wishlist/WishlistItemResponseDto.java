@@ -1,36 +1,18 @@
-package org.example.eindopdrachtbackend.travel.model;
+package org.example.eindopdrachtbackend.travel.dto.wishlist;
 
-import jakarta.persistence.*;
 import org.example.eindopdrachtbackend.travel.model.enums.Category;
+
 import java.math.BigDecimal;
 
-@Entity
-public class WishlistItem {
+public class WishlistItemResponseDto {
 
-    @Id
-    @Column(updatable = false, nullable = false, unique = true)
     private String id;
-
     private String description;
-
-    @Column(name = "amount_local")
     private BigDecimal amountLocal;
-    @Column(name = "amount_home")
     private BigDecimal amountHome;
-
-    private boolean purchased = false;
-
-    @ManyToOne
-    @JoinColumn(name = "trip_id", nullable = false)
-    private Trip trip;
-
-    @Enumerated(EnumType.STRING)
+    private boolean purchased;
     private Category category;
-
-    public WishlistItem() {}
-
-    public Trip getTrip() { return trip; }
-    public void setTrip(Trip trip) { this.trip = trip; }
+    private String tripId;
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -50,5 +32,6 @@ public class WishlistItem {
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
 
+    public String getTripId() { return tripId; }
+    public void setTripId(String tripId) { this.tripId = tripId; }
 }
-

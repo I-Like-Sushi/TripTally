@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Positive;
 import org.example.eindopdrachtbackend.travel.dto.expense.ExpenseResponseDto;
+import org.example.eindopdrachtbackend.travel.dto.wishlist.WishlistItemResponseDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,6 +37,8 @@ public class TripResponseDto {
 
     private List<ExpenseResponseDto> expenses = new ArrayList<>();
 
+    private List<WishlistItemResponseDto> wishlistItems = new ArrayList<>();
+
     public String getTripId() { return tripId; }
     public void setTripId(String tripId) { this.tripId = tripId; }
 
@@ -62,4 +65,8 @@ public class TripResponseDto {
 
     public List<ExpenseResponseDto> getExpenses() { return expenses; }
     public void setExpenses(List<ExpenseResponseDto> expenses) { this.expenses = expenses != null ? new ArrayList<>(expenses) : new ArrayList<>(); }
+
+    public List<WishlistItemResponseDto> getWishlistItems() { return wishlistItems; }
+
+    public void setWishlistItems(List<WishlistItemResponseDto> wishlistItems) { this.wishlistItems = wishlistItems; }
 }

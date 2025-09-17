@@ -5,6 +5,7 @@ import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
 import org.example.eindopdrachtbackend.exception.auth.UnauthorizedException;
 import org.example.eindopdrachtbackend.exception.trip.ExpenseNotFound;
 import org.example.eindopdrachtbackend.exception.trip.TripNotFoundException;
+import org.example.eindopdrachtbackend.exception.trip.WishlistItemNotFound;
 import org.example.eindopdrachtbackend.exception.user.UserNotAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotSuperAdmin;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
@@ -71,8 +72,8 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
     }
 
-    @ExceptionHandler(TripNotFoundException.class)
-    public ResponseEntity<String> handleTripNotFound(TripNotFoundException ex){
+    @ExceptionHandler(WishlistItemNotFound.class)
+    public ResponseEntity<String> handleWishlistItemNotFound(WishlistItemNotFound ex){
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());

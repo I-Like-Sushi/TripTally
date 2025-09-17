@@ -1,4 +1,4 @@
-package org.example.eindopdrachtbackend.travel.tripMapper;
+package org.example.eindopdrachtbackend.travel.mapper;
 
 import org.example.eindopdrachtbackend.travel.dto.expense.ExpenseRequestDto;
 import org.example.eindopdrachtbackend.travel.dto.expense.ExpenseResponseDto;

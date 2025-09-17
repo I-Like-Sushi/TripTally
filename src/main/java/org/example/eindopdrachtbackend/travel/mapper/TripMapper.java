@@ -1,4 +1,4 @@
-package org.example.eindopdrachtbackend.travel.tripMapper;
+package org.example.eindopdrachtbackend.travel.mapper;
 
 import org.example.eindopdrachtbackend.travel.dto.trip.TripRequestDto;
 import org.example.eindopdrachtbackend.travel.dto.trip.TripResponseDto;
@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 public class TripMapper {
 
     private final ExpenseMapper expenseMapper;
+    private final WishlistItemMapper wishlistItemMapper;
 
-    public TripMapper(ExpenseMapper expenseMapper) {
+    public TripMapper(ExpenseMapper expenseMapper, WishlistItemMapper wishlistItemMapper) {
         this.expenseMapper = expenseMapper;
+        this.wishlistItemMapper = wishlistItemMapper;
     }
 
     public TripResponseDto toDto(Trip trip) {
@@ -28,6 +30,11 @@ public class TripMapper {
         dto.setExpenses(
                 trip.getExpenses().stream()
                         .map(expenseMapper::toDto)
+                        .toList()
+        );
+        dto.setWishlistItems(
+                trip.getWishlistItems().stream()
+                        .map(wishlistItemMapper::toDto)
                         .toList()
         );
         return dto;

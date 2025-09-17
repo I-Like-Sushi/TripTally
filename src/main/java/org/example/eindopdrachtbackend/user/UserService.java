@@ -31,16 +31,16 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public long generateUniqueId() {
-        long id;
+    public Long generateUniqueId() {
+        Long id;
         do {
             id = generateRandom12DigitNumber();
         } while (userRepository.existsById(id));
         return id;
     }
 
-    private long generateRandom12DigitNumber() {
-        return 100_000_000_000L + (Math.abs(random.nextLong()) % 900_000_000_000L);
+    private Long generateRandom12DigitNumber() {
+        return 100_000_0000L + (Math.abs(random.nextLong()) % 900_000_0000L);
     }
 
     @Transactional

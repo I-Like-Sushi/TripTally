@@ -1,6 +1,6 @@
 package org.example.eindopdrachtbackend.user;
 
-import org.example.eindopdrachtbackend.travel.tripMapper.TripMapper;
+import org.example.eindopdrachtbackend.travel.mapper.TripMapper;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
 import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
 import org.example.eindopdrachtbackend.user.dto.UserUpdateDto;

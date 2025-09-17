@@ -9,7 +9,7 @@ import org.example.eindopdrachtbackend.travel.dto.trip.TripUpdateDto;
 import org.example.eindopdrachtbackend.travel.model.Trip;
 import org.example.eindopdrachtbackend.travel.repository.TripRepository;
 import org.example.eindopdrachtbackend.travel.service.TripService;
-import org.example.eindopdrachtbackend.travel.tripMapper.TripMapper;
+import org.example.eindopdrachtbackend.travel.mapper.TripMapper;
 import org.example.eindopdrachtbackend.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;

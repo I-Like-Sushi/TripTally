@@ -6,7 +6,7 @@ import org.example.eindopdrachtbackend.travel.model.Expense;
 import org.example.eindopdrachtbackend.travel.model.Trip;
 import org.example.eindopdrachtbackend.travel.repository.ExpenseRepository;
 import org.example.eindopdrachtbackend.travel.repository.TripRepository;
-import org.example.eindopdrachtbackend.travel.tripMapper.ExpenseMapper;
+import org.example.eindopdrachtbackend.travel.mapper.ExpenseMapper;
 import org.springframework.stereotype.Service;
 
 @Service

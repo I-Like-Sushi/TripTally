@@ -9,7 +9,7 @@ import org.example.eindopdrachtbackend.travel.dto.expense.ExpenseUpdateDto;
 import org.example.eindopdrachtbackend.travel.model.Expense;
 import org.example.eindopdrachtbackend.travel.repository.ExpenseRepository;
 import org.example.eindopdrachtbackend.travel.service.ExpenseService;
-import org.example.eindopdrachtbackend.travel.tripMapper.ExpenseMapper;
+import org.example.eindopdrachtbackend.travel.mapper.ExpenseMapper;
 import org.example.eindopdrachtbackend.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,7 +38,7 @@ public class ExpenseController {
         this.expenseRepository = expenseRepository;
     }
     
-    @PostMapping("/create-expense")
+    @PostMapping("/add-expense")
     public ResponseEntity<ExpenseResponseDto> createExpense(@PathVariable Long userId,
                                                             @PathVariable String tripId,
                                                             @Valid @RequestBody ExpenseRequestDto expenseRequestDto,
@@ -54,7 +54,7 @@ public class ExpenseController {
 
     }
 
-    @GetMapping("/{targetId}/{expenseId}") // the logged-in user can get his own data from "/auth/me"
+    @GetMapping("/{targetId}/{expenseId}")
     public ResponseEntity<ExpenseResponseDto> getExpense(@PathVariable Long userId,
                                                          @PathVariable String tripId,
                                                          @PathVariable Long expenseId,

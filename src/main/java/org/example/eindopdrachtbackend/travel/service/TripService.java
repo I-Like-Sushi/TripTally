@@ -2,7 +2,7 @@ package org.example.eindopdrachtbackend.travel.service;
 
 import jakarta.transaction.Transactional;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
-import org.example.eindopdrachtbackend.travel.tripMapper.TripMapper;
+import org.example.eindopdrachtbackend.travel.mapper.TripMapper;
 import org.example.eindopdrachtbackend.travel.dto.trip.TripRequestDto;
 import org.example.eindopdrachtbackend.travel.model.Trip;
 import org.example.eindopdrachtbackend.travel.repository.TripRepository;
@@ -33,7 +33,7 @@ public class TripService {
         Trip trip = tripMapper.toEntity(dto);
         trip.setUser(user);
 
-        String tripId = user.getId() + "_" +
+        String tripId =
                 trip.getDestination().toUpperCase().replaceAll("\\s+", "_") + "_" +
                 trip.getStartDate().toString().replaceAll("-", "") + "_" +
                 UUID.randomUUID().toString().substring(0, 6);
