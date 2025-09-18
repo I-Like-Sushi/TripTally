@@ -1,6 +1,7 @@
 package org.example.eindopdrachtbackend.travel.dto.trip;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -28,6 +29,12 @@ public class TripResponseDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate tripCreatedDate;
+
+    @Column(length = 3, nullable = false)
+    private String homeCurrencyCode; // e.g. "EUR"
+
+    @Column(length = 3, nullable = false)
+    private String localCurrencyCode; // e.g. "JPY"
 
     @Positive(message = "Budget in home currency must be positive")
     private BigDecimal budgetHomeCurrency;
@@ -69,4 +76,10 @@ public class TripResponseDto {
     public List<WishlistItemResponseDto> getWishlistItems() { return wishlistItems; }
 
     public void setWishlistItems(List<WishlistItemResponseDto> wishlistItems) { this.wishlistItems = wishlistItems; }
+
+    public String getHomeCurrencyCode() { return homeCurrencyCode; }
+    public void setHomeCurrencyCode(String homeCurrencyCode) { this.homeCurrencyCode = homeCurrencyCode; }
+
+    public String getLocalCurrencyCode() { return localCurrencyCode; }
+    public void setLocalCurrencyCode(String localCurrencyCode) { this.localCurrencyCode = localCurrencyCode; }
 }

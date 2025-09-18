@@ -38,10 +38,20 @@ public class WishlistItemMapper {
     }
 
     public void updateEntityFromDto(WishlistItemUpdateDto dto, WishlistItem wishlistItem) {
-        if (dto.getDescription() != null) { wishlistItem.setDescription(dto.getDescription()); }
-        if (dto.getAmountLocal() != null) { wishlistItem.setAmountLocal(dto.getAmountLocal()); }
-        if (dto.getAmountHome() != null) { wishlistItem.setAmountHome(dto.getAmountHome()); }
-        if (dto.getPurchased() != null) { wishlistItem.setPurchased(dto.getPurchased()); }
-        if (dto.getCategory() != null) { wishlistItem.setCategory(dto.getCategory()); }
+        if (dto.getDescription() != null) {
+            wishlistItem.setDescription(dto.getDescription());
+        }
+        if (dto.getAmountLocal() != null) {
+            wishlistItem.setAmountLocal(dto.getAmountLocal());
+        }
+        if (dto.getAmountHome() != null) {
+            wishlistItem.setAmountHome(dto.getAmountHome());
+        }
+        if (dto.getPurchased() != null) {
+            wishlistItem.setPurchased(dto.getPurchased());
+        }
+        if (dto.getCategory() != null) {
+            wishlistItem.setCategory(dto.getCategory());
+        }
     }
 }

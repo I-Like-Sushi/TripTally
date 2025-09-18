@@ -2,6 +2,9 @@ package org.example.eindopdrachtbackend.travel.service;
 
 import jakarta.transaction.Transactional;
 import org.example.eindopdrachtbackend.exception.user.UserNotFoundException;
+import org.example.eindopdrachtbackend.travel.currencyRates.CurrencyValidator;
+import org.example.eindopdrachtbackend.travel.currencyRates.FxConfig;
+import org.example.eindopdrachtbackend.travel.currencyRates.FxRateRepository;
 import org.example.eindopdrachtbackend.travel.mapper.TripMapper;
 import org.example.eindopdrachtbackend.travel.dto.trip.TripRequestDto;
 import org.example.eindopdrachtbackend.travel.model.Trip;
@@ -10,6 +13,7 @@ import org.example.eindopdrachtbackend.user.User;
 import org.example.eindopdrachtbackend.user.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
@@ -18,11 +22,15 @@ public class TripService {
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
     private final TripMapper tripMapper;
+    private final FxRateRepository fxRateRepository;
+    private final FxConfig fxConfig;
 
-    public TripService(TripRepository tripRepository, UserRepository userRepository, TripMapper tripMapper) {
+    public TripService(TripRepository tripRepository, UserRepository userRepository, TripMapper tripMapper, FxRateRepository fxRateRepository, FxConfig fxConfig) {
         this.tripRepository = tripRepository;
         this.userRepository = userRepository;
         this.tripMapper = tripMapper;
+        this.fxRateRepository = fxRateRepository;
+        this.fxConfig = fxConfig;
     }
 
     @Transactional
@@ -30,11 +38,74 @@ public class TripService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        // ✅ Validate currency codes before doing anything else
+        CurrencyValidator.validateCurrencyCode(dto.getHomeCurrencyCode(), "home currency code");
+        CurrencyValidator.validateCurrencyCode(dto.getLocalCurrencyCode(), "local currency code");
+
         Trip trip = tripMapper.toEntity(dto);
         trip.setUser(user);
+        trip.setHomeCurrencyCode(dto.getHomeCurrencyCode());
+        trip.setLocalCurrencyCode(dto.getLocalCurrencyCode());
 
-        String tripId =
-                trip.getDestination().toUpperCase().replaceAll("\\s+", "_") + "_" +
+        // ✅ Budget calculation logic
+        if (dto.getBudgetHomeCurrency() != null && dto.getBudgetLocalCurrency() == null) {
+            // Convert home → local
+            BigDecimal rate = fxRateRepository.findByBaseCurrencyAndQuoteCurrencyAndAsOfDate(
+                            dto.getHomeCurrencyCode(),
+                            dto.getLocalCurrencyCode(),
+                            fxConfig.getSnapshotDate()
+                    ).orElseThrow(() -> new IllegalStateException("No FX rate found"))
+                    .getRate();
+
+            trip.setBudgetHomeCurrency(dto.getBudgetHomeCurrency());
+            trip.setBudgetLocalCurrency(dto.getBudgetHomeCurrency().multiply(rate));
+
+        } else if (dto.getBudgetLocalCurrency() != null && dto.getBudgetHomeCurrency() == null) {
+            // Convert local → home
+            BigDecimal rate = fxRateRepository.findByBaseCurrencyAndQuoteCurrencyAndAsOfDate(
+                            dto.getLocalCurrencyCode(),
+                            dto.getHomeCurrencyCode(),
+                            fxConfig.getSnapshotDate()
+                    ).orElseThrow(() -> new IllegalStateException("No FX rate found"))
+                    .getRate();
+
+            trip.setBudgetLocalCurrency(dto.getBudgetLocalCurrency());
+            trip.setBudgetHomeCurrency(dto.getBudgetLocalCurrency().multiply(rate));
+
+        } else {
+            if (dto.getBudgetHomeCurrency() == null && dto.getBudgetLocalCurrency() == null) {
+                throw new IllegalArgumentException(
+                        "You must provide either budgetHomeCurrency or budgetLocalCurrency"
+                );
+            }
+
+            if (dto.getBudgetHomeCurrency() != null && dto.getBudgetLocalCurrency() != null) {
+                // Optional: validate they match the FX rate
+                BigDecimal expectedLocal = dto.getBudgetHomeCurrency()
+                        .multiply(
+                                fxRateRepository.findByBaseCurrencyAndQuoteCurrencyAndAsOfDate(
+                                                dto.getHomeCurrencyCode(),
+                                                dto.getLocalCurrencyCode(),
+                                                fxConfig.getSnapshotDate()
+                                        ).orElseThrow(() -> new IllegalStateException("No FX rate found"))
+                                        .getRate()
+                        );
+
+                BigDecimal tolerance = new BigDecimal("0.01"); // allow 1 cent difference
+                if (dto.getBudgetLocalCurrency().subtract(expectedLocal).abs().compareTo(tolerance) > 0) {
+                    throw new IllegalArgumentException(
+                            "Provided budgets do not match the FX rate for " +
+                                    dto.getHomeCurrencyCode() + " → " + dto.getLocalCurrencyCode()
+                    );
+                }
+
+                trip.setBudgetHomeCurrency(dto.getBudgetHomeCurrency());
+                trip.setBudgetLocalCurrency(dto.getBudgetLocalCurrency());
+            }
+        }
+
+        // ✅ Generate tripId
+        String tripId = trip.getDestination().toUpperCase().replaceAll("\\s+", "_") + "_" +
                 trip.getStartDate().toString().replaceAll("-", "") + "_" +
                 UUID.randomUUID().toString().substring(0, 6);
 
@@ -42,6 +113,8 @@ public class TripService {
 
         return tripRepository.save(trip);
     }
+
+
 
 
 }

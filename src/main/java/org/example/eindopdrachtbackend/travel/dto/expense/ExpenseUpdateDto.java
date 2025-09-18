@@ -1,19 +1,22 @@
 package org.example.eindopdrachtbackend.travel.dto.expense;
 
-import jakarta.validation.constraints.Positive;
+
+import jakarta.validation.constraints.PositiveOrZero;
+import org.example.eindopdrachtbackend.travel.currencyRates.AtLeastOneField;
 import org.example.eindopdrachtbackend.travel.model.enums.Category;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@AtLeastOneField(fields = { "amountLocal", "amountHome" })
 public class ExpenseUpdateDto {
 
     private String description;
 
-    @Positive(message = "Amount in local currency must be positive")
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal amountLocal;
 
-    @Positive(message = "Amount in home currency must be positive")
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal amountHome;
 
     private LocalDate date;

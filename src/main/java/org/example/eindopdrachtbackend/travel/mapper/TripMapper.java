@@ -27,20 +27,16 @@ public class TripMapper {
         dto.setBudgetHomeCurrency(trip.getBudgetHomeCurrency());
         dto.setBudgetLocalCurrency(trip.getBudgetLocalCurrency());
         dto.setTripCreatedDate(trip.getTripCreatedDate());
-        dto.setExpenses(
-                trip.getExpenses().stream()
-                        .map(expenseMapper::toDto)
-                        .toList()
-        );
-        dto.setWishlistItems(
-                trip.getWishlistItems().stream()
-                        .map(wishlistItemMapper::toDto)
-                        .toList()
-        );
+        dto.setHomeCurrencyCode(trip.getHomeCurrencyCode());
+        dto.setLocalCurrencyCode(trip.getLocalCurrencyCode());
+        dto.setExpenses(trip.getExpenses().stream()
+                .map(expenseMapper::toDto)
+                .toList());
+        dto.setWishlistItems(trip.getWishlistItems().stream()
+                .map(wishlistItemMapper::toDto)
+                .toList());
         return dto;
     }
-
-
 
     public Trip toEntity(TripRequestDto dto) {
         Trip trip = new Trip();
@@ -50,6 +46,8 @@ public class TripMapper {
         trip.setEndDate(dto.getEndDate());
         trip.setBudgetHomeCurrency(dto.getBudgetHomeCurrency());
         trip.setBudgetLocalCurrency(dto.getBudgetLocalCurrency());
+        trip.setHomeCurrencyCode(dto.getHomeCurrencyCode());
+        trip.setLocalCurrencyCode(dto.getLocalCurrencyCode());
         return trip;
     }
 
@@ -60,6 +58,9 @@ public class TripMapper {
         if (dto.getEndDate() != null) trip.setEndDate(dto.getEndDate());
         if (dto.getBudgetHomeCurrency() != null) trip.setBudgetHomeCurrency(dto.getBudgetHomeCurrency());
         if (dto.getBudgetLocalCurrency() != null) trip.setBudgetLocalCurrency(dto.getBudgetLocalCurrency());
+        if (dto.getHomeCurrencyCode() != null) trip.setHomeCurrencyCode(dto.getHomeCurrencyCode());
+        if (dto.getLocalCurrencyCode() != null) trip.setLocalCurrencyCode(dto.getLocalCurrencyCode());
     }
+
 }
 

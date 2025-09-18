@@ -2,22 +2,22 @@ package org.example.eindopdrachtbackend.travel.dto.expense;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
+import org.example.eindopdrachtbackend.travel.currencyRates.AtLeastOneField;
 import org.example.eindopdrachtbackend.travel.model.enums.Category;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@AtLeastOneField(fields = { "amountLocal", "amountHome" })
 public class ExpenseRequestDto {
 
     @NotBlank(message = "Description is required")
     private String description;
 
-    @NotNull(message = "Amount in local currency is required")
-    @Positive(message = "Amount in local currency must be positive")
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal amountLocal;
 
-    @NotNull(message = "Amount in home currency is required")
-    @Positive(message = "Amount in home currency must be positive")
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal amountHome;
 
     @JsonFormat(pattern = "yyyy-MM-dd")

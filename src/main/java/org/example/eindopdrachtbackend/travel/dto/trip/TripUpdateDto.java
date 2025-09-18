@@ -1,12 +1,15 @@
 package org.example.eindopdrachtbackend.travel.dto.trip;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import org.example.eindopdrachtbackend.travel.currencyRates.AtLeastOneField;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@AtLeastOneField(fields = { "budgetLocalCurrency", "budgetHomeCurrency" })
 public class TripUpdateDto {
 
     @NotBlank(message = "Destination is required")
@@ -20,57 +23,39 @@ public class TripUpdateDto {
     @NotNull(message = "End date is required")
     private LocalDate endDate;
 
-    @Positive(message = "Budget in home currency must be positive")
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal budgetHomeCurrency;
 
-    @Positive(message = "Budget in local currency must be positive")
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal budgetLocalCurrency;
 
-    public String getDestination() {
-        return destination;
-    }
+    @Column(length = 3, nullable = false)
+    private String homeCurrencyCode; // e.g. "EUR"
 
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
+    @Column(length = 3, nullable = false)
+    private String localCurrencyCode; // e.g. "JPY"
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDestination() { return destination; }
+    public void setDestination(String destination) { this.destination = destination; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
+    public LocalDate getStartDate() { return startDate; }
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
+    public LocalDate getEndDate() { return endDate; }
+    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
+    public BigDecimal getBudgetHomeCurrency() { return budgetHomeCurrency; }
+    public void setBudgetHomeCurrency(BigDecimal budgetHomeCurrency) { this.budgetHomeCurrency = budgetHomeCurrency; }
 
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
+    public BigDecimal getBudgetLocalCurrency() { return budgetLocalCurrency; }
+    public void setBudgetLocalCurrency(BigDecimal budgetLocalCurrency) { this.budgetLocalCurrency = budgetLocalCurrency; }
 
-    public BigDecimal getBudgetHomeCurrency() {
-        return budgetHomeCurrency;
-    }
+    public String getHomeCurrencyCode() { return homeCurrencyCode; }
+    public void setHomeCurrencyCode(String homeCurrencyCode) { this.homeCurrencyCode = homeCurrencyCode; }
 
-    public void setBudgetHomeCurrency(BigDecimal budgetHomeCurrency) {
-        this.budgetHomeCurrency = budgetHomeCurrency;
-    }
-
-    public BigDecimal getBudgetLocalCurrency() {
-        return budgetLocalCurrency;
-    }
-
-    public void setBudgetLocalCurrency(BigDecimal budgetLocalCurrency) {
-        this.budgetLocalCurrency = budgetLocalCurrency;
-    }
+    public String getLocalCurrencyCode() { return localCurrencyCode; }
+    public void setLocalCurrencyCode(String localCurrencyCode) { this.localCurrencyCode = localCurrencyCode; }
 }

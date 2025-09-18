@@ -28,6 +28,12 @@ public class Trip {
     private BigDecimal budgetHomeCurrency;
     private BigDecimal budgetLocalCurrency;
 
+    @Column(length = 3, nullable = false)
+    private String homeCurrencyCode; // e.g. "EUR"
+
+    @Column(length = 3, nullable = false)
+    private String localCurrencyCode; // e.g. "JPY"
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDate tripCreatedDate;
@@ -107,5 +113,11 @@ public class Trip {
 
     public LocalDate getTripCreatedDate() { return tripCreatedDate; }
     public void setTripCreatedDate(LocalDate tripCreatedDate) { this.tripCreatedDate = tripCreatedDate; }
+
+    public String getHomeCurrencyCode() { return homeCurrencyCode; }
+    public void setHomeCurrencyCode(String homeCurrencyCode) { this.homeCurrencyCode = homeCurrencyCode; }
+
+    public String getLocalCurrencyCode() { return localCurrencyCode; }
+    public void setLocalCurrencyCode(String localCurrencyCode) { this.localCurrencyCode = localCurrencyCode; }
 
 }

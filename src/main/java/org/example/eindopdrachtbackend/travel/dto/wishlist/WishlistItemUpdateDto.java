@@ -1,14 +1,22 @@
 package org.example.eindopdrachtbackend.travel.dto.wishlist;
 
+import jakarta.validation.constraints.PositiveOrZero;
+import org.example.eindopdrachtbackend.travel.currencyRates.AtLeastOneField;
 import org.example.eindopdrachtbackend.travel.model.enums.Category;
 
 import java.math.BigDecimal;
 
+@AtLeastOneField(fields = { "amountLocal", "amountHome" })
 public class WishlistItemUpdateDto {
 
     private String description;
+
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal amountLocal;
+
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal amountHome;
+
     private Boolean purchased;
     private Category category;
 

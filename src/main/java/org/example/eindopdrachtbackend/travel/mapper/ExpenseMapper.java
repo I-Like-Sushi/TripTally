@@ -32,11 +32,10 @@ public class ExpenseMapper {
         return expense;
     }
 
-    public void updateEntityFromDto(ExpenseUpdateDto dto, Expense expense){
-        if (expense.getId()!=null){ expense.setId(expense.getId()); }
-        if (expense.getCategory()!=null){ expense.setCategory(expense.getCategory()); }
-        if (expense.getDescription()!=null){ expense.setDescription(expense.getDescription()); }
-        if (expense.getAmountLocal()!=null){ expense.setAmountLocal(expense.getAmountLocal()); }
-        if (expense.getAmountHome()!=null){ expense.setAmountHome(expense.getAmountHome()); }
+    public void updateEntityFromDto(ExpenseUpdateDto dto, Expense expense) {
+        if (dto.getCategory() != null) expense.setCategory(dto.getCategory());
+        if (dto.getDescription() != null) expense.setDescription(dto.getDescription());
+        if (dto.getAmountLocal() != null) expense.setAmountLocal(dto.getAmountLocal());
+        if (dto.getAmountHome() != null) expense.setAmountHome(dto.getAmountHome());
     }
 }

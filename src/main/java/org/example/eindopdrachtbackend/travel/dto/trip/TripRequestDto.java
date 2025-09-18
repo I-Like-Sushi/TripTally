@@ -1,11 +1,13 @@
 package org.example.eindopdrachtbackend.travel.dto.trip;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
-
+import org.example.eindopdrachtbackend.travel.currencyRates.AtLeastOneField;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@AtLeastOneField(fields = { "budgetLocalCurrency", "budgetHomeCurrency" })
 public class TripRequestDto {
 
     @NotBlank
@@ -24,11 +26,17 @@ public class TripRequestDto {
     @Future
     private LocalDate endDate;
 
-    @NotNull
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal budgetHomeCurrency;
 
-    @NotNull
+    @PositiveOrZero(message = "Amount in local currency must be positive or zero")
     private BigDecimal budgetLocalCurrency;
+
+    @Column(length = 3, nullable = false)
+    private String homeCurrencyCode; // e.g. "EUR"
+
+    @Column(length = 3, nullable = false)
+    private String localCurrencyCode; // e.g. "JPY"
 
     private Long userId;
 
@@ -49,5 +57,11 @@ public class TripRequestDto {
 
     public BigDecimal getBudgetLocalCurrency() { return budgetLocalCurrency; }
     public void setBudgetLocalCurrency(BigDecimal budgetLocalCurrency) { this.budgetLocalCurrency = budgetLocalCurrency; }
+
+    public String getHomeCurrencyCode() { return homeCurrencyCode; }
+    public void setHomeCurrencyCode(String homeCurrencyCode) { this.homeCurrencyCode = homeCurrencyCode; }
+
+    public String getLocalCurrencyCode() { return localCurrencyCode; }
+    public void setLocalCurrencyCode(String localCurrencyCode) { this.localCurrencyCode = localCurrencyCode; }
 
 }
