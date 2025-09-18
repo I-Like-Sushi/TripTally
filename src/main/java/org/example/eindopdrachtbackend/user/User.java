@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.example.eindopdrachtbackend.travel.model.Trip;
 import org.hibernate.annotations.CreationTimestamp;
 
+import org.example.eindopdrachtbackend.image.Image;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User{
 
     @Id
     @Column(updatable = false, nullable = false)
@@ -55,7 +57,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Trip> trips = new ArrayList<>();
 
-    public User() {};
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
+
+
+    public User() {}
 
     public List<Trip> getTrips() { return trips; }
 
@@ -123,4 +129,23 @@ public class User {
     public LocalDateTime getAccountCreatedAt() { return accountCreatedAt; }
     public void setAccountCreatedAt(LocalDateTime accountCreatedAt) { this.accountCreatedAt = accountCreatedAt; }
 
+
+    public List<Image> getImages() { return images; }
+
+    public void setImages(List<Image> images) {
+        this.images.clear();
+        if (images != null) {
+            images.forEach(this::addImage);
+        }
+    }
+
+    public void addImage(Image image) {
+        images.add(image);
+        image.setUser(this);
+    }
+
+    public void removeImage(Image image) {
+        images.remove(image);
+        image.setUser(null);
+    }
 }

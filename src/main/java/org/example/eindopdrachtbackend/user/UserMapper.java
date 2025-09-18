@@ -1,5 +1,6 @@
 package org.example.eindopdrachtbackend.user;
 
+import org.example.eindopdrachtbackend.image.Image;
 import org.example.eindopdrachtbackend.travel.mapper.TripMapper;
 import org.example.eindopdrachtbackend.user.dto.UserRequestDto;
 import org.example.eindopdrachtbackend.user.dto.UserResponseDto;
@@ -46,6 +47,8 @@ public class UserMapper {
         dto.setTrips(user.getTrips().stream()
                 .map(tripMapper::toDto)
                 .toList());
+
+
         return dto;
     }
 
@@ -72,6 +75,4 @@ public class UserMapper {
         if (dto.getGender() != null) user.setGender(dto.getGender());
         if (dto.getDateOfBirth() != null) user.setDateOfBirth(dto.getDateOfBirth());
     }
-
-
 }

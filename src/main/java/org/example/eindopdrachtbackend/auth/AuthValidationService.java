@@ -17,6 +17,7 @@ public class AuthValidationService {
     }
 
     public void validateSelfOrThrow(Long targetId, Authentication authentication) {
+
         if (authentication == null || !authentication.isAuthenticated() ||
                 "anonymousUser".equals(authentication.getName())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");

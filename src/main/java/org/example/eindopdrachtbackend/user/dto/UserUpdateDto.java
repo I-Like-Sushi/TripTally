@@ -66,7 +66,5 @@ public class UserUpdateDto {
     public void setAllowViewingAccesTo(List<String> allowViewingAccesTo) { this.allowViewingAccesTo = allowViewingAccesTo; }
     public void addAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.add(allowViewingAccesTo); }
     public void removeAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.remove(allowViewingAccesTo); }
-
-
 }
 

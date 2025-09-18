@@ -72,7 +72,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/me",
                                 "/api/users/*",
-                                "/api/users/*/trips/**"
+                                "/api/users/*/trips/**",
+                                "/api/images/**"
                         ).authenticated()
 
                         .anyRequest().authenticated()

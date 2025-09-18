@@ -3,6 +3,7 @@ package org.example.eindopdrachtbackend.exception.common;
 import org.example.eindopdrachtbackend.exception.auth.ForbiddenAction;
 import org.example.eindopdrachtbackend.exception.auth.InvalidLoginException;
 import org.example.eindopdrachtbackend.exception.auth.UnauthorizedException;
+import org.example.eindopdrachtbackend.exception.image.ImageNotFound;
 import org.example.eindopdrachtbackend.exception.trip.ExpenseNotFound;
 import org.example.eindopdrachtbackend.exception.trip.TripNotFoundException;
 import org.example.eindopdrachtbackend.exception.trip.WishlistItemNotFound;
@@ -74,6 +75,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(WishlistItemNotFound.class)
     public ResponseEntity<String> handleWishlistItemNotFound(WishlistItemNotFound ex){
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ImageNotFound.class)
+    public ResponseEntity<String> handleImageNotFound(ImageNotFound ex){
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());

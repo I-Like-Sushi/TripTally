@@ -2,6 +2,7 @@ package org.example.eindopdrachtbackend.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,5 @@ public class UserRequestDto {
         }
     }
     public void removeAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.remove(allowViewingAccesTo); }
-
-
 }
 
