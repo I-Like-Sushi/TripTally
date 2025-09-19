@@ -5,6 +5,7 @@ import org.example.eindopdrachtbackend.travel.model.enums.Category;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "wishlist_item")
 public class WishlistItem {
 
     @Id

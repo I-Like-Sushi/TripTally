@@ -38,7 +38,6 @@ public class TripService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        // ✅ Validate currency codes before doing anything else
         CurrencyValidator.validateCurrencyCode(dto.getHomeCurrencyCode(), "home currency code");
         CurrencyValidator.validateCurrencyCode(dto.getLocalCurrencyCode(), "local currency code");
 
@@ -47,7 +46,6 @@ public class TripService {
         trip.setHomeCurrencyCode(dto.getHomeCurrencyCode());
         trip.setLocalCurrencyCode(dto.getLocalCurrencyCode());
 
-        // ✅ Budget calculation logic
         if (dto.getBudgetHomeCurrency() != null && dto.getBudgetLocalCurrency() == null) {
             // Convert home → local
             BigDecimal rate = fxRateRepository.findByBaseCurrencyAndQuoteCurrencyAndAsOfDate(
@@ -80,7 +78,6 @@ public class TripService {
             }
 
             if (dto.getBudgetHomeCurrency() != null && dto.getBudgetLocalCurrency() != null) {
-                // Optional: validate they match the FX rate
                 BigDecimal expectedLocal = dto.getBudgetHomeCurrency()
                         .multiply(
                                 fxRateRepository.findByBaseCurrencyAndQuoteCurrencyAndAsOfDate(
@@ -104,7 +101,6 @@ public class TripService {
             }
         }
 
-        // ✅ Generate tripId
         String tripId = trip.getDestination().toUpperCase().replaceAll("\\s+", "_") + "_" +
                 trip.getStartDate().toString().replaceAll("-", "") + "_" +
                 UUID.randomUUID().toString().substring(0, 6);
@@ -113,9 +109,6 @@ public class TripService {
 
         return tripRepository.save(trip);
     }
-
-
-
 
 }
 

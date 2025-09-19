@@ -25,10 +25,7 @@ public class ImageController {
     public ResponseEntity<String> uploadImage(@PathVariable Long userId,
                                               @RequestParam("file") MultipartFile file,
                                               Authentication auth) {
-        System.out.println("--------------auth: " + auth.getName());
-        System.out.println("--------------userId: " + userId);
         authValidationService.validateSelfOrThrow(userId, auth);
-        System.out.println("--------------TEST");
 
         imageService.uploadUserImage(userId, file);
         return ResponseEntity.ok("Image successfully uploaded");
