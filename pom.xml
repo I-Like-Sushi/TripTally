@@ -6,10 +6,10 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>TripTally</artifactId>
+    <artifactId>EindopdrachtBackend</artifactId>
     <name>TripTally</name>
     <version>0.0.1</version>
     <description>EindopdrachtBackend</description>

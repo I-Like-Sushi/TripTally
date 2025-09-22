@@ -24,11 +24,8 @@ INSERT INTO user_roles (user_id, role) VALUES
                                            (400000000, 'ROLE_SUPERADMIN');
 
 INSERT INTO user_allowed_access (user_id, allowed_username) VALUES
-                                                                (100000000, 'alicew'),
-                                                                (100000000, 'jennytty'),
-                                                                (200000000, 'bwayne'),
-                                                                (300000000, 'jdoe'),
-                                                                (400000000, 'alicew');
+                                                                (200000000, 'jdoe'),
+                                                                (100000000, 'jennytty');
 
 INSERT INTO trip (
     id,

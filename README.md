@@ -11,7 +11,7 @@ TripTally is a Java and Spring Boot–powered student project that makes it easy
 - Generate summary reports to stay on budget.
 
 <sub><sup>*FX rates do not rely on an external API. Please update the rates to the value of market when used.
-See `scr/main/org.example.eindopdracht/travel/currencyRates/FxSnapshotLoader` for the rates that are being used in this project.</sup></sub>
+See `scr/main/org/example/eindopdracht/travel/currencyRates/FxSnapshotLoader` for the rates that are being used in this project.</sup></sub>
 
 ---
 
@@ -37,6 +37,7 @@ See `scr/main/org.example.eindopdracht/travel/currencyRates/FxSnapshotLoader` fo
 ## Getting Started
 
 Prerequisites:
+
 - Java 21
 - Maven
 - PostgreSQL (local or Docker)
@@ -176,9 +177,9 @@ java -jar target/TripTally-0.0.1.jar --spring.profiles.active=prod
 Use environment variables (recommended):
 
 ```bash
-export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/triptally_db export 
-export PRING_DATASOURCE_USERNAME=postgres export
-export SPRING_DATASOURCE_PASSWORD=supersecret export
+export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/triptally_db
+export PRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=supersecret
 export APP_SECURITY_JWT_SECRET=ultra_secret
 ```
 
