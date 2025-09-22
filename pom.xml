@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>EindopdrachtBackend</artifactId>
+    <artifactId>TripTally</artifactId>
+    <name>TripTally</name>
     <version>0.0.1</version>
-    <name>EindopdrachtBackend</name>
     <description>EindopdrachtBackend</description>
     <url/>
     <licenses>
@@ -28,9 +28,9 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <mockito.version>5.19.0</mockito.version>
     </properties>
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -100,14 +100,13 @@
             <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
 
@@ -122,6 +121,15 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.17.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>@{argLine} -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar</argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

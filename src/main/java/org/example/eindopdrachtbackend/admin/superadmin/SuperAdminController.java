@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/internal/superadmin-ops-9f3x7k") // super admin safe address.
+@RequestMapping("/api/v1/superadmin") // super admin safe address.
 public class SuperAdminController {
 
     private final SuperAdminService superAdminService;
@@ -62,7 +62,7 @@ public class SuperAdminController {
         return ResponseEntity.created(location).body(responseDto);
     }
 
-    @PostMapping("/create-admin")
+    @PostMapping("/admins")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<UserResponseDto> createAdmin(@Valid @RequestBody UserRequestDto dto, Authentication auth, @RequestParam Long superAdminId) {
 
@@ -74,7 +74,7 @@ public class SuperAdminController {
         return ResponseEntity.created(location).body(responseDto);
     }
 
-    @DeleteMapping("/delete-admin/{id}")
+    @DeleteMapping("/admins/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<String> deleteAdmin(@PathVariable Long id, Authentication auth, @RequestParam Long superAdminId, @RequestHeader(value = "X-SUPERADMIN-SECRET", required = false) String providedSecret) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
@@ -90,7 +90,7 @@ public class SuperAdminController {
         return ResponseEntity.ok("Superadmin override used by " + auth.getName() + " to delete user " + user.getUsername() + " with id " + user.getId());
     }
 
-    @GetMapping("/fetch-all-users")
+    @GetMapping("/users")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public List<User> fetchAllUsers(Authentication auth, @RequestParam Long superAdminId) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
@@ -98,7 +98,7 @@ public class SuperAdminController {
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/users/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<User> fetchUser(@PathVariable Long id, Authentication auth, @RequestParam Long superAdminId) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
@@ -110,7 +110,7 @@ public class SuperAdminController {
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/users/{id}")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<String> updateUser(
             @PathVariable Long id,

@@ -21,7 +21,7 @@ import java.net.URI;
 
 @RestController
 @PreAuthorize("hasRole('USER')")
-@RequestMapping("/api/users/{userId}/trips")
+@RequestMapping("/api/v1/users/{userId}/trips")
 public class TripController {
 
     private final AuthValidationService authValidationService;
@@ -38,7 +38,7 @@ public class TripController {
         this.userService = userService;
     }
 
-    @PostMapping("/create-trip")
+    @PostMapping
     public ResponseEntity<TripResponseDto> createTrip(
             @PathVariable Long userId,
             @Valid @RequestBody TripRequestDto dto,
@@ -53,10 +53,10 @@ public class TripController {
         return ResponseEntity.created(location).body(responseDto);
     }
 
-    @GetMapping("/{targetId}/{tripId}")
+    @GetMapping("/{tripId}")
     public ResponseEntity<TripResponseDto> getTrip(
             @PathVariable Long userId,
-            @PathVariable Long targetId,
+            @RequestBody Long targetId,
             @PathVariable String tripId,
             Authentication auth) {
 

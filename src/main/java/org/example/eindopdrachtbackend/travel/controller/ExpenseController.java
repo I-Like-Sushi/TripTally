@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/users/{userId}/trips/{tripId}/expenses")
+@RequestMapping("/api/v1/users/{userId}/trips/{tripId}/expenses")
 @PreAuthorize("hasRole('USER')")
 public class ExpenseController {
 
@@ -38,7 +38,7 @@ public class ExpenseController {
         this.expenseRepository = expenseRepository;
     }
     
-    @PostMapping("/add-expense")
+    @PostMapping
     public ResponseEntity<ExpenseResponseDto> createExpense(@PathVariable Long userId,
                                                             @PathVariable String tripId,
                                                             @Valid @RequestBody ExpenseRequestDto expenseRequestDto,
@@ -54,11 +54,11 @@ public class ExpenseController {
 
     }
 
-    @GetMapping("/{targetId}/{expenseId}")
+    @GetMapping("/{expenseId}")
     public ResponseEntity<ExpenseResponseDto> getExpense(@PathVariable Long userId,
                                                          @PathVariable String tripId,
                                                          @PathVariable Long expenseId,
-                                                         @PathVariable Long targetId,
+                                                         @RequestBody Long targetId,
                                                          Authentication auth) {
         authValidationService.validateSelfOrThrow(userId, auth);
 

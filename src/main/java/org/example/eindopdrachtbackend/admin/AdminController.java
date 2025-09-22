@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/v1/admin")
 public class AdminController {
 
     private final UserRepository userRepository;
@@ -32,7 +32,7 @@ public class AdminController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestParam long adminId, Authentication auth) {
+    public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestParam Long adminId, Authentication auth) {
         authValidationService.validateSelfOrThrow(adminId, auth);
         adminModificationPolicy.enforce(auth, id);
 
@@ -43,7 +43,7 @@ public class AdminController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponseDto> getAccount(@PathVariable Long id, Authentication auth, @RequestParam long adminId) {
+    public ResponseEntity<UserResponseDto> getAccount(@PathVariable Long id, Authentication auth, @RequestParam Long adminId) {
         authValidationService.validateSelfOrThrow(adminId, auth);
 
         User user = userRepository.findById(id)
@@ -53,9 +53,9 @@ public class AdminController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/fetch-all-users")
+    @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserResponseDto>> getAllUsers(Authentication auth, @RequestParam long adminId) {
+    public ResponseEntity<List<UserResponseDto>> getAllUsers(Authentication auth, @RequestParam Long adminId) {
         authValidationService.validateSelfOrThrow(adminId, auth);
         List<UserResponseDto> AllAccountsToDto = userRepository.findAll().stream()
                 .map(userMapper::toDto)

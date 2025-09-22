@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
@@ -29,7 +29,7 @@ public class UserController {
         this.authValidationService = authValidationService;
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto dto) {
         User newUser = userService.createUser(dto);
         UserResponseDto responseDto = userMapper.toDto(newUser);
@@ -67,16 +67,16 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/viewing-access/{id}")
+    @GetMapping("/{userId}/viewing-access")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponseDto> loggedInView(
-            @PathVariable Long id, Authentication auth, @RequestParam Long loggedInUserId) {
+            @PathVariable Long userId, Authentication auth, @RequestParam Long loggedInUserId) {
 
         authValidationService.validateSelfOrThrow(loggedInUserId, auth);
 
-        boolean hasViewingPermission = userService.hasViewingAccess(auth, id);
+        boolean hasViewingPermission = userService.hasViewingAccess(auth, userId);
 
-        User targetUser = userRepository.findById(id)
+        User targetUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return hasViewingPermission
@@ -84,13 +84,13 @@ public class UserController {
                 : ResponseEntity.ok(userMapper.restrictedView(targetUser));
     }
 
-    @PostMapping("/viewing-access/{id}")
+    @PostMapping("/{userId}/viewing-access")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> giveUserViewingPermission(
-            @PathVariable Long id, Authentication auth, @RequestParam Long loggedInUserId) {
+            @PathVariable Long userId, Authentication auth, @RequestParam Long loggedInUserId) {
 
         authValidationService.validateSelfOrThrow(loggedInUserId, auth);
-        User targetUser = userRepository.findById(id)
+        User targetUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean granted = userService.grantViewingAccess(auth, targetUser);
@@ -100,13 +100,13 @@ public class UserController {
                 : ResponseEntity.ok("You already had viewing access to " + targetUser.getUsername());
     }
 
-    @DeleteMapping("/viewing-access/{id}")
+    @DeleteMapping("/{userId}/viewing-access/{targetUserId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> deleteUserFromViewingAccess(
-            @PathVariable Long id, Authentication auth, @RequestParam Long loggedInUserId) {
+            @PathVariable Long userId, Authentication auth, @PathVariable Long targetUserId) {
 
-        authValidationService.validateSelfOrThrow(loggedInUserId, auth);
-        User targetUser = userRepository.findById(id)
+        authValidationService.validateSelfOrThrow(userId, auth);
+        User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean removed = userService.removeViewerAccess(auth, targetUser);

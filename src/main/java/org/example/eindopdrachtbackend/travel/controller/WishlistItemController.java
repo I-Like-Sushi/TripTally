@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/users/{userId}/trips/{tripId}/wishlist-item")
+@RequestMapping("/api/v1/users/{userId}/trips/{tripId}/wishlist-item")
 @PreAuthorize("hasRole('USER')")
 public class WishlistItemController {
 
@@ -34,7 +34,7 @@ public class WishlistItemController {
         this.wishlistItemRepository = wishlistItemRepository;
     }
 
-    @PostMapping("/add-to-wishlist")
+    @PostMapping
     public ResponseEntity<WishlistItemResponseDto> addToWishlist(@PathVariable String tripId,
                                                                  @PathVariable Long userId,
                                                                  Authentication auth,
