@@ -39,7 +39,7 @@ public class Trip {
     private String localCurrencyCode;
 
     @CreationTimestamp
-    @Column(name = "trip_created_at", updatable = false)
+    @Column(name = "trip_created_at")
     private LocalDate tripCreatedDate;
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)

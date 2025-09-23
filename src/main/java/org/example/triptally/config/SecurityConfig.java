@@ -56,24 +56,23 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/login",
-                                "/api/users/register",
-                                "/api/internal/superadmin-ops-9f3x7k/create-super-admin"
+                                "/auth/v1/login",
+                                "/api/v1/users/register",
+                                "/api/v1/superadmin/create-super-admin"
                         ).permitAll()
 
                         .requestMatchers(
-                                "/api/admin/*",
-                                "/api/admin/fetchAllUsers"
+                                "/api/v1/admin/**"
                         ).hasRole("ADMIN")
 
                         .requestMatchers(
-                                "/api/internal/superadmin-ops-9f3x7k/**").hasRole("SUPERADMIN")
+                                "/api/v1/superadmin/**").hasRole("SUPERADMIN")
 
                         .requestMatchers(
-                                "/auth/me",
-                                "/api/users/*",
-                                "/api/users/*/trips/**",
-                                "/api/images/**"
+                                "/auth/v1/me",
+                                "/api/v1/users/*",
+                                "/api/v1/users/*/trips/**",
+                                "/api/v1/images/**"
                         ).authenticated()
 
                         .anyRequest().authenticated()

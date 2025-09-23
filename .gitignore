@@ -34,3 +34,6 @@ build/
 
 # Environment variables
 SUPERADMIN_SECRET.env
+DB_NAME.env
+DB_USERNAME.env
+DB_PASSWORD.env

@@ -37,7 +37,7 @@ public class User{
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime accountCreatedAt;
 
     @ElementCollection(fetch = FetchType.EAGER)

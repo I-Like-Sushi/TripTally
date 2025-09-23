@@ -15,6 +15,7 @@ INSERT INTO users (
       (300000000, 'alicew',  'Alice', 'Wonderland','alice.wonderland@example.com','hashedpassword','1988-12-01', true,'Female','Adventure seeker'),
       (400000000, 'bwayne',  'Bruce', 'Wayne',     'bruce.wayne@example.com',  'hashedpassword', '1980-02-19', true,  'Male',   'Dark Knight');
 
+
 INSERT INTO user_roles (user_id, role) VALUES
                                            (100000000, 'ROLE_SUPERADMIN'),
                                            (200000000, 'ROLE_ADMIN'),
@@ -28,14 +29,14 @@ INSERT INTO user_allowed_access (user_id, allowed_username) VALUES
                                                                 (100000000, 'jennytty');
 
 INSERT INTO trip (
-    id,
+    trip_id,
     user_id,
     destination,
     description,
     start_date,
     end_date,
-    budget_home_currency,
-    budget_local_currency,
+    budget_home,
+    budget_local,
     home_currency_code,
     local_currency_code
 ) VALUES
@@ -54,12 +55,12 @@ INSERT INTO expense (
     time_stamp,
     category
 ) VALUES
-      (101, 'TOKYO_20253010_5d873c', 'Bought some nice sushi', 4400,  25.29, '2025-02-11', '2025-02-11', 'Food & Dining'),
-      (102, 'PARIS_20251105_abcd1234','Eiffel Tower tickets',    250,   2.95, '2025-11-06', '2025-11-06', 'Entertainment'),
-      (103, 'TOKYO_20253010_5d873c', 'Train pass',              12000, 69.00,'2025-10-31', '2025-10-31','Transport'),
-      (104, 'PARIS_20251105_abcd1234','Croissant breakfast',      15,    0.18, '2025-11-06', '2025-11-06','Food & Dining'),
-      (105, 'NYC_20260115_xYz7890Q',  'Broadway show',           180,  200.00,'2026-01-17', '2026-01-17','Entertainment'),
-      (106, 'SYDNEY_20251210_qWeRtY12','Harbour Bridge climb',    300,  310.00,'2025-12-11', '2025-12-11','Adventure');
+      (101, 'TOKYO_20253010_5d873c', 'Bought some nice sushi', 4400,  25.29, '2025-02-11', '2025-02-11', 'FOOD'),
+      (102, 'PARIS_20251105_abcd1234','Eiffel Tower tickets',    250,   2.95, '2025-11-06', '2025-11-06', 'ENTERTAINMENT'),
+      (103, 'TOKYO_20253010_5d873c', 'Train pass',              12000, 69.00,'2025-10-31', '2025-10-31','TRANSPORT'),
+      (104, 'PARIS_20251105_abcd1234','Croissant breakfast',      15,    0.18, '2025-11-06', '2025-11-06','FOOD'),
+      (105, 'NYC_20260115_xYz7890Q',  'Broadway show',           180,  200.00,'2026-01-17', '2026-01-17','ENTERTAINMENT'),
+      (106, 'SYDNEY_20251210_qWeRtY12','Harbour Bridge climb',    300,  310.00,'2025-12-11', '2025-12-11','ACTIVITIES');
 
 INSERT INTO wishlist_item (
     id,
@@ -70,10 +71,10 @@ INSERT INTO wishlist_item (
     purchased,
     category
 ) VALUES
-      ('aZ8kLmP2Q', 'TOKYO_20253010_5d873c', 'Football jersey',       20980, 12.57, false, 'Shopping'),
-      ('bX7yZa01', 'PARIS_20251105_abcd1234','Louvre Museum tour',     50,    0.58, false, 'Entertainment'),
-      ('cD9fGh23', 'TOKYO_20253010_5d873c', 'Kimono rental',          6000,  34.50, true,  'Shopping'),
-      ('dE4kLm56', 'NYC_20260115_xYz7890Q',   'Statue of Liberty',     25,    27.50, false, 'Tour'),
-      ('eR5tYu78', 'SYDNEY_20251210_qWeRtY12','Bondi Beach surf class',120,   125.00, false, 'Adventure'),
-      ('fG1hIj90', 'PARIS_20251105_abcd1234','Seine river cruise',     45,    0.53, false, 'Entertainment');
+      ('aZ8kLmP2Q', 'TOKYO_20253010_5d873c', 'Football jersey',       20980, 12.57, false, 'SHOPPING'),
+      ('bX7yZa01', 'PARIS_20251105_abcd1234','Louvre Museum tour',     50,    0.58, false, 'ENTERTAINMENT'),
+      ('cD9fGh23', 'TOKYO_20253010_5d873c', 'Kimono rental',          6000,  34.50, true,  'SHOPPING'),
+      ('dE4kLm56', 'NYC_20260115_xYz7890Q',   'Statue of Liberty',     25,    27.50, false, 'OTHER'),
+      ('eR5tYu78', 'SYDNEY_20251210_qWeRtY12','Bondi Beach surf class',120,   125.00, false, 'ACTIVITIES'),
+      ('fG1hIj90', 'PARIS_20251105_abcd1234','Seine river cruise',     45,    0.53, false, 'ACTIVITIES');
 
