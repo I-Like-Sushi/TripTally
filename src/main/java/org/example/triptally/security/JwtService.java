@@ -13,7 +13,7 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET = "your-256-bit-secret-your-256-bit-secret";
+    private static final String SECRET = "b1e7d7a4f4b3c8e5d9a6c4f2b1e8d3c7a9e6f5a4c3b2d1f0a9e8b7c6d5e4f3a2";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
     public String generateToken(String subject) {

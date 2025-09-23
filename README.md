@@ -68,18 +68,42 @@ cd TripTally
 Create or edit `src/main/resources/application.properties`:
 
 ```properties
+# Database details
 spring.application.name=TripTally
-server.port=8080
-spring.datasource.url=jdbc:postgresql://localhost:5432/triptally_db
-spring.datasource.username=postgres spring.datasource.password=password
-spring.jpa.hibernate.ddl-auto=update spring.jpa.show-sql=true
+spring.datasource.url=jdbc:postgresql://localhost:5432/${DB_NAME}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Helps with deleting from SQL
 spring.mvc.hiddenmethod.filter.enabled=true
+
+# Debugging
+logging.level.org.example.userdemo2.security.JwtAuthFilter=DEBUG
+
+spring.jpa.generate-ddl=true
+
+spring.sql.init.mode=always
+spring.jpa.defer-datasource-initialization=true
+
+# datasource PostgreSQl
+spring.sql.init.platform=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# jpa
+spring.jpa.database=postgresql
 ```
 
 ### Optional: load secrets from a local env file (gitignored)
 
 ```properties
-spring.config.import=optional:file:SUPERADMIN_SECRET.env[.properties]
+spring.config.import=optional:file:SUPERADMIN_SECRET.env[.properties], \
+  optional:file:DB_NAME.env[.properties],\
+  optional:file:DB_USERNAME.env[.properties],\
+  optional:file:DB_PASSWORD.env[.properties]
+
 ```
 
 ## Domain-specific example
@@ -174,18 +198,12 @@ java -jar target/TripTally-0.0.1.jar --spring.profiles.active=prod
 
 ## Environment & Secrets
 
-Use environment variables (recommended):
-
-```bash
-export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/triptally_db
-export PRING_DATASOURCE_USERNAME=postgres
-export SPRING_DATASOURCE_PASSWORD=supersecret
-export APP_SECURITY_JWT_SECRET=ultra_secret
-```
-
-Optional .env file (gitignored):
+.env file (gitignored), create your own passwords:
 ```dotenv
-SPRING_DATASOURCE_PASSWORD=supersecret APP_SECURITY_JWT_SECRET=ultra_secret
+SUPERADMIN_SECRET=supersecret
+DB_NAME=triptally_db
+DB_USERNAME=even_more_secret
+DB_PASSWORD=secrety_secret
 ```
 
 ## Testing
@@ -199,9 +217,8 @@ mvn test mvn verify mvn jacoco:report
 ```bash
 docker build -t triptally:latest . docker run -p 8080:8080
 -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/triptally_db
--e SPRING_DATASOURCE_USERNAME=postgres
--e SPRING_DATASOURCE_PASSWORD=supersecret
--e APP_SECURITY_JWT_SECRET=ultra_secret
+-e SPRING_DATASOURCE_USERNAME=even_more_secret
+-e SPRING_DATASOURCE_PASSWORD=secrety_secret
 triptally:latest
 ```
 
