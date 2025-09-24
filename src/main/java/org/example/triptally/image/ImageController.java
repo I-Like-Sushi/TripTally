@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 @RestController
-@RequestMapping("/api/v1/images")
+@RequestMapping("/api/v1/users/{userId}/images")
 @PreAuthorize("hasRole('USER')")
 public class ImageController {
 
@@ -21,7 +21,7 @@ public class ImageController {
         this.authValidationService = authValidationService;
     }
 
-    @PostMapping("/upload/{userId}")
+    @PostMapping
     public ResponseEntity<String> uploadImage(@PathVariable Long userId,
                                               @RequestParam("file") MultipartFile file,
                                               Authentication auth) {
@@ -31,7 +31,7 @@ public class ImageController {
         return ResponseEntity.ok("Image successfully uploaded");
     }
 
-    @GetMapping("/download/{imageId}")
+    @GetMapping("/{imageId}")
     public ResponseEntity<byte[]> downloadImage(@PathVariable Long imageId) {
         byte[] data = imageService.getUserImageData(imageId);
         String fileName = imageService.getUserImageName(imageId);
@@ -43,12 +43,11 @@ public class ImageController {
                 .body(data);
     }
 
-    @DeleteMapping("/delete-image/{userId}")
-    public ResponseEntity<String> deleteImage(@PathVariable Long userId, Authentication auth) {
+    @DeleteMapping("/{imageId}")
+    public ResponseEntity<String> deleteImage(@PathVariable Long userId, Authentication auth, @PathVariable Long imageId) {
         authValidationService.validateSelfOrThrow(userId, auth);
-        imageService.deleteUserImage(userId);
+        imageService.deleteUserImage(imageId);
         return ResponseEntity.ok("Image successfully deleted");
-
     }
 
 

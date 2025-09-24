@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@PreAuthorize("hasRole('ADMIN')")
+@RequestMapping("/api/v1/admin/{adminId}")
 public class AdminController {
 
     private final UserRepository userRepository;
@@ -30,23 +31,21 @@ public class AdminController {
         this.userMapper = userMapper;
     }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteAccount(@PathVariable Long id, @RequestParam Long adminId, Authentication auth) {
+    @DeleteMapping("/{targetId}")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long adminId, @PathVariable Long targetId, Authentication auth) {
         authValidationService.validateSelfOrThrow(adminId, auth);
-        adminModificationPolicy.enforce(auth, id);
+        adminModificationPolicy.enforce(auth, targetId);
 
         String username = auth.getName();
-        userRepository.deleteById(id);
+        userRepository.deleteById(targetId);
         return ResponseEntity.ok("Account of " + username + " deleted successfully");
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponseDto> getAccount(@PathVariable Long id, Authentication auth, @RequestParam Long adminId) {
+    @GetMapping("/{targetId}")
+    public ResponseEntity<UserResponseDto> getAccount(@PathVariable Long adminId, Authentication auth, @PathVariable Long targetId) {
         authValidationService.validateSelfOrThrow(adminId, auth);
 
-        User user = userRepository.findById(id)
+        User user = userRepository.findById(targetId)
                 .orElseThrow(() -> new UserNotFoundException("User unknown"));
 
         UserResponseDto dto = userMapper.toDto(user);
@@ -54,8 +53,7 @@ public class AdminController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserResponseDto>> getAllUsers(Authentication auth, @RequestParam Long adminId) {
+    public ResponseEntity<List<UserResponseDto>> getAllUsers(@PathVariable Long adminId, Authentication auth) {
         authValidationService.validateSelfOrThrow(adminId, auth);
         List<UserResponseDto> AllAccountsToDto = userRepository.findAll().stream()
                 .map(userMapper::toDto)
@@ -64,16 +62,18 @@ public class AdminController {
         return ResponseEntity.ok(AllAccountsToDto);
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{targetId}")
     public ResponseEntity<UserResponseDto> updateAccount(
-            @PathVariable Long id,
+            @PathVariable Long targetId,
             @RequestBody UserUpdateDto dto,
-            Authentication auth) {
+            Authentication auth,
+            @PathVariable Long adminId) {
 
-        adminModificationPolicy.enforce(auth, id);
+        // Target can be self.
 
-        User targetUser = userRepository.findById(id)
+        adminModificationPolicy.enforce(auth, adminId);
+
+        User targetUser = userRepository.findById(targetId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         userMapper.updateEntityFromDto(dto, targetUser);

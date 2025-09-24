@@ -56,9 +56,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/v1/login",
-                                "/api/v1/users/register",
-                                "/api/v1/superadmin/create-super-admin"
+                                "/api/v1/auth/login",
+                                "/api/v1/users",
+                                "/api/v1/superadmin"
                         ).permitAll()
 
                         .requestMatchers(
@@ -70,8 +70,7 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/auth/v1/me",
-                                "/api/v1/users/*",
-                                "/api/v1/users/*/trips/**",
+                                "/api/v1/users/**",
                                 "/api/v1/images/**"
                         ).authenticated()
 

@@ -136,8 +136,8 @@ mvn clean package && java -jar target/TripTally-0.0.1.jar
   - POST /api/v1/users → register a new user
   - PUT /api/v1/users/{id} → update own user (ROLE_USER)
   - DELETE /api/v1/users/{id} → delete own user (ROLE_USER)
-  - GET /api/v1/users/{userId}/viewing-access?loggedInUserId={selfId} → view user with access rules (ROLE_USER)
-  - POST /api/v1/users/{userId}/viewing-access?loggedInUserId={selfId} → grant mutual viewing access (ROLE_USER)
+  - GET /api/v1/users/{userId}/viewing-access/{targetUserId} → view user with access rules (ROLE_USER)
+  - POST /api/v1/users/{userId}/viewing-access/{targetUserId} → grant mutual viewing access (ROLE_USER)
   - DELETE /api/v1/users/{userId}/viewing-access/{targetUserId} → revoke mutual viewing access (ROLE_USER)
 
 - Trips (scoped to user)
@@ -159,23 +159,23 @@ mvn clean package && java -jar target/TripTally-0.0.1.jar
   - DELETE /api/v1/users/{userId}/trips/{tripId}/wishlist-item/{wishlistItemId} → delete wishlist item (ROLE_USER, self; must belong to trip)
 
 - Images (user-scoped)
-  - POST /api/v1/images/upload/{userId} → upload image (ROLE_USER, self)
-  - GET /api/v1/images/download/{imageId} → download image (ROLE_USER)
-  - DELETE /api/v1/images/delete-image/{userId} → delete image (ROLE_USER, self)
+  - POST /api/v1/users/{userId}/images → upload image (ROLE_USER, self)
+  - GET /api/v1/users/{userId}/images/{ImageId} → download image (ROLE_USER)
+  - DELETE /api/v1/users/{userId}/images/{ImageId} → delete image (ROLE_USER, self)
 
 - Admin (ROLE_ADMIN)
-  - GET /api/v1/admin/{id}?adminId={selfId} → fetch a user
-  - GET /api/v1/admin?adminId={selfId} → list users
-  - PUT /api/v1/admin/{id} → update user (policy enforced)
-  - DELETE /api/v1/admin/{id}?adminId={selfId} → delete user (policy enforced)
+  - GET /api/v1/admin/{adminId} → list users
+  - GET /api/v1/admin/{adminId}/{targetId} → fetch a user
+  - PUT /api/v1/admin/{adminId}/{targetId} → update user (policy enforced)
+  - DELETE /api/v1/admin/{adminId}/{targetId} → delete user (policy enforced)
 
 - Super Admin (ROLE_SUPERADMIN; header X-SUPERADMIN-SECRET for certain ops)
-  - POST /api/v1/superadmin/create-super-admin → bootstrap super admin (requires header)
-  - POST /api/v1/superadmin/admins?superAdminId={selfId} → create admin
-  - GET /api/v1/superadmin/users?superAdminId={selfId} → list all users
-  - GET /api/v1/superadmin/users/{id}?superAdminId={selfId} → get user
-  - PUT /api/v1/superadmin/users/{id}?superAdminId={selfId} → update user (optional override via header)
-  - DELETE /api/v1/superadmin/admins/{id}?superAdminId={selfId} → delete admin (optional override via header)
+  - POST /api/v1/superadmin → bootstrap super admin (requires header)
+  - POST /api/v1/superadmin/{superAdminId} → create admin
+  - GET /api/v1/superadmin/{superAdminId}/users → list all users
+  - GET /api/v1/superadmin/{superAdminId}/users/{targetId} → get user
+  - PUT /api/v1/superadmin/{superAdminId}/users/{targetId} → update user (optional override via header)
+  - DELETE /api/v1/superadmin/{superAdminId}/users/{targetId} → delete admin (optional override via header)
 ```
 
 Notes:

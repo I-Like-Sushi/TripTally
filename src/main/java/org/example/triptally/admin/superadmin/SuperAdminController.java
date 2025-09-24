@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/superadmin") // super admin safe address.
+@RequestMapping("/api/v1/superadmin")
 public class SuperAdminController {
 
     private final SuperAdminService superAdminService;
@@ -47,7 +47,7 @@ public class SuperAdminController {
         this.adminModificationPolicy = adminModificationPolicy;
     }
 
-    @PostMapping("/create-super-admin")
+    @PostMapping
     public ResponseEntity<UserResponseDto> createSuperAdmin(
             @RequestHeader("X-SUPERADMIN-SECRET") String providedSecret,
             @Valid @RequestBody UserRequestDto dto) {
@@ -62,9 +62,9 @@ public class SuperAdminController {
         return ResponseEntity.created(location).body(responseDto);
     }
 
-    @PostMapping("/admins")
+    @PostMapping("/{superAdminId}")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public ResponseEntity<UserResponseDto> createAdmin(@Valid @RequestBody UserRequestDto dto, Authentication auth, @RequestParam Long superAdminId) {
+    public ResponseEntity<UserResponseDto> createAdmin(@Valid @RequestBody UserRequestDto dto, Authentication auth, @PathVariable Long superAdminId) {
 
         authValidationService.validateSelfOrThrow(superAdminId, auth);
 
@@ -74,15 +74,15 @@ public class SuperAdminController {
         return ResponseEntity.created(location).body(responseDto);
     }
 
-    @DeleteMapping("/admins/{id}")
+    @DeleteMapping("/{superAdminId}/users/{targetId}")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public ResponseEntity<String> deleteAdmin(@PathVariable Long id, Authentication auth, @RequestParam Long superAdminId, @RequestHeader(value = "X-SUPERADMIN-SECRET", required = false) String providedSecret) {
+    public ResponseEntity<String> deleteAdmin(@PathVariable Long targetId, Authentication auth, @PathVariable Long superAdminId, @RequestHeader(value = "X-SUPERADMIN-SECRET", required = false) String providedSecret) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
 
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(targetId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (!superAdminSecret.equals(providedSecret)) {
-            adminModificationPolicy.enforce(auth, id);
+            adminModificationPolicy.enforce(auth, targetId);
             return ResponseEntity.ok("Admin has been deleted");
         }
 
@@ -90,45 +90,45 @@ public class SuperAdminController {
         return ResponseEntity.ok("Superadmin override used by " + auth.getName() + " to delete user " + user.getUsername() + " with id " + user.getId());
     }
 
-    @GetMapping("/users")
+    @GetMapping("/{superAdminId}/users")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public List<User> fetchAllUsers(Authentication auth, @RequestParam Long superAdminId) {
+    public List<User> fetchAllUsers(Authentication auth, @PathVariable Long superAdminId) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
         return userRepository.findAll();
 
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{superAdminId}/users/{targetId}")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public ResponseEntity<User> fetchUser(@PathVariable Long id, Authentication auth, @RequestParam Long superAdminId) {
+    public ResponseEntity<User> fetchUser(@PathVariable Long targetId, Authentication auth, @PathVariable Long superAdminId) {
         authValidationService.validateSelfOrThrow(superAdminId, auth);
 
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(targetId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
 
         return ResponseEntity.ok(user);
 
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{superAdminId}/users/{targetId}")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<String> updateUser(
-            @PathVariable Long id,
+            @PathVariable Long targetId,
             @RequestBody User user,
             Authentication auth,
-            @RequestParam Long superAdminId,
+            @PathVariable Long superAdminId,
             @RequestHeader(value = "X-SUPERADMIN-SECRET", required = false) String providedSecret) {
 
         authValidationService.validateSelfOrThrow(superAdminId, auth);
 
         // If no override, enforce normal policy
         if (!superAdminSecret.equals(providedSecret)) {
-            adminModificationPolicy.enforce(auth, id);
+            adminModificationPolicy.enforce(auth, targetId);
         } else {
-            log.warn("Superadmin override used by {} to update user {}", auth.getName(), id);
+            log.warn("Superadmin override used by {} to update user {}", auth.getName(), targetId);
         }
 
-        user.setId(id);
+        user.setId(targetId);
 
         userRepository.save(user);
 

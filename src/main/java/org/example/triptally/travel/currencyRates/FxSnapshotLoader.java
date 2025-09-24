@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
-// ----------- USE ONCE ----------- //
 @Component
 public class FxSnapshotLoader implements CommandLineRunner {
 

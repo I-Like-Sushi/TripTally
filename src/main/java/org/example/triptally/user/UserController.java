@@ -67,16 +67,16 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{userId}/viewing-access")
+    @GetMapping("/{userId}/viewing-access/{targetUserId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponseDto> loggedInView(
-            @PathVariable Long userId, Authentication auth, @RequestParam Long loggedInUserId) {
+            @PathVariable Long userId, Authentication auth, @PathVariable Long targetUserId) {
 
-        authValidationService.validateSelfOrThrow(loggedInUserId, auth);
+        authValidationService.validateSelfOrThrow(userId, auth);
 
         boolean hasViewingPermission = userService.hasViewingAccess(auth, userId);
 
-        User targetUser = userRepository.findById(userId)
+        User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return hasViewingPermission
@@ -84,13 +84,13 @@ public class UserController {
                 : ResponseEntity.ok(userMapper.restrictedView(targetUser));
     }
 
-    @PostMapping("/{userId}/viewing-access")
+    @PostMapping("/{userId}/viewing-access/{targetUserId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> giveUserViewingPermission(
-            @PathVariable Long userId, Authentication auth, @RequestParam Long loggedInUserId) {
+            @PathVariable Long userId, Authentication auth, @PathVariable Long targetUserId) {
 
-        authValidationService.validateSelfOrThrow(loggedInUserId, auth);
-        User targetUser = userRepository.findById(userId)
+        authValidationService.validateSelfOrThrow(userId, auth);
+        User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean granted = userService.grantViewingAccess(auth, targetUser);

@@ -60,13 +60,14 @@ public class ImageService {
     @Transactional
     public void deleteUserImage(Long imageId) {
         Image image = imageRepository.findById(imageId)
-                .orElseThrow(() -> new ImageNotFound("User not found"));
+                .orElseThrow(() -> new ImageNotFound("Image not found"));
 
         image.setImageName(null);
         image.setImageType(null);
         image.setImageData(null);
 
         imageRepository.save(image);
+        imageRepository.deleteById(imageId);
     }
 
 }
