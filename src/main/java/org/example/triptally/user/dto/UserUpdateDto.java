@@ -38,6 +38,8 @@ public class UserUpdateDto {
     private String gender;
     private String bio;
 
+    private boolean enabled;
+
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
@@ -66,5 +68,8 @@ public class UserUpdateDto {
     public void setAllowViewingAccesTo(List<String> allowViewingAccesTo) { this.allowViewingAccesTo = allowViewingAccesTo; }
     public void addAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.add(allowViewingAccesTo); }
     public void removeAllowViewingAccesTo(String allowViewingAccesTo) { this.allowViewingAccesTo.remove(allowViewingAccesTo); }
+
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 }
 

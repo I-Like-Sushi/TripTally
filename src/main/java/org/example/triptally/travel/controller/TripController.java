@@ -56,18 +56,18 @@ public class TripController {
     @GetMapping("/{tripId}")
     public ResponseEntity<TripResponseDto> getTrip(
             @PathVariable Long userId,
-            @RequestBody Long targetId,
             @PathVariable String tripId,
             Authentication auth) {
 
         authValidationService.validateSelfOrThrow(userId, auth);
 
-        if (!userService.hasViewingAccess(auth, targetId)) {
+        if (!userService.hasViewingAccess(auth, userId)) {
             throw new AccessDeniedException("You are not allowed to view this trip.");
         }
 
         Trip trip = tripRepository.findByTripId(tripId)
                 .orElseThrow(() -> new TripNotFoundException("Trip not found."));
+
         return ResponseEntity.ok(tripMapper.toDto(trip));
     }
 
@@ -76,22 +76,21 @@ public class TripController {
         authValidationService.validateSelfOrThrow(userId, auth);
         Trip trip = tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found."));
         String destination = trip.getDestination();
+        tripRepository.delete(trip);
         return ResponseEntity.ok("Trip to " + destination + " has been deleted.");
     }
 
     @PutMapping("/{tripId}")
     public ResponseEntity<TripResponseDto> updateTrip(@PathVariable Long userId,
-                                                      @Valid @RequestBody TripUpdateDto dto,
+                                                      @RequestBody TripRequestDto dto,
                                                       Authentication auth,
                                                       @PathVariable String tripId) {
         authValidationService.validateSelfOrThrow(userId, auth);
 
-        Trip trip = tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found."));
-
-        tripMapper.updateEntityFromDto(dto, trip);
-        tripRepository.save(trip);
-        return ResponseEntity.ok(tripMapper.toDto(trip));
+        Trip updated = tripService.updateTrip(userId, tripId, dto);
+        return ResponseEntity.ok(tripMapper.toDto(updated));
     }
+
 
 
 

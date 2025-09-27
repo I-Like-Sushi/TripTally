@@ -1,6 +1,7 @@
 package org.example.triptally.travel.service;
 
 import jakarta.transaction.Transactional;
+import org.example.triptally.exception.trip.TripNotFoundException;
 import org.example.triptally.exception.user.UserNotFoundException;
 import org.example.triptally.travel.currencyRates.CurrencyValidator;
 import org.example.triptally.travel.currencyRates.FxConfig;
@@ -11,6 +12,7 @@ import org.example.triptally.travel.model.Trip;
 import org.example.triptally.travel.repository.TripRepository;
 import org.example.triptally.user.User;
 import org.example.triptally.user.UserRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -109,6 +111,76 @@ public class TripService {
 
         return tripRepository.save(trip);
     }
+
+    @Transactional
+    public Trip updateTrip(Long userId, String tripId, TripRequestDto dto) {
+        Trip trip = tripRepository.findByTripId(tripId)
+                .orElseThrow(() -> new TripNotFoundException("Trip not found."));
+
+        if (!trip.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("Trip does not belong to this user.");
+        }
+
+        String homeCurrency = dto.getHomeCurrencyCode() != null ? dto.getHomeCurrencyCode() : trip.getHomeCurrencyCode();
+        String localCurrency = dto.getLocalCurrencyCode() != null ? dto.getLocalCurrencyCode() : trip.getLocalCurrencyCode();
+
+        CurrencyValidator.validateCurrencyCode(homeCurrency, "home currency code");
+        CurrencyValidator.validateCurrencyCode(localCurrency, "local currency code");
+
+        tripMapper.updateEntityFromDto(dto, trip);
+
+        trip.setHomeCurrencyCode(homeCurrency);
+        trip.setLocalCurrencyCode(localCurrency);
+
+        BigDecimal dtoBudgetHome = dto.getBudgetHomeCurrency();
+        BigDecimal dtoBudgetLocal = dto.getBudgetLocalCurrency();
+
+        if (dtoBudgetHome == null && dtoBudgetLocal == null) {
+            return tripRepository.save(trip);
+        }
+
+        if (dtoBudgetHome != null && dtoBudgetLocal == null) {
+            BigDecimal rate = fxRateRepository.findByBaseCurrencyAndQuoteCurrencyAndAsOfDate(
+                            homeCurrency, localCurrency, fxConfig.getSnapshotDate()
+                    ).orElseThrow(() -> new IllegalStateException("No FX rate found"))
+                    .getRate();
+
+            trip.setBudgetHomeCurrency(dtoBudgetHome);
+            trip.setBudgetLocalCurrency(dtoBudgetHome.multiply(rate));
+            return tripRepository.save(trip);
+        }
+
+        if (dtoBudgetLocal != null && dtoBudgetHome == null) {
+            BigDecimal rate = fxRateRepository.findByBaseCurrencyAndQuoteCurrencyAndAsOfDate(
+                            localCurrency, homeCurrency, fxConfig.getSnapshotDate()
+                    ).orElseThrow(() -> new IllegalStateException("No FX rate found"))
+                    .getRate();
+
+            trip.setBudgetLocalCurrency(dtoBudgetLocal);
+            trip.setBudgetHomeCurrency(dtoBudgetLocal.multiply(rate));
+            return tripRepository.save(trip);
+        }
+
+        BigDecimal rate = fxRateRepository.findByBaseCurrencyAndQuoteCurrencyAndAsOfDate(
+                homeCurrency, localCurrency, fxConfig.getSnapshotDate()
+        ).orElseThrow(() -> new IllegalStateException("No FX rate found")).getRate();
+
+        BigDecimal expectedLocal = dtoBudgetHome.multiply(rate);
+        BigDecimal tolerance = new BigDecimal("0.01"); // 1 cent tolerance
+
+        if (dtoBudgetLocal.subtract(expectedLocal).abs().compareTo(tolerance) > 0) {
+            throw new IllegalArgumentException(
+                    "Provided budgets do not match the FX rate for " + homeCurrency + " → " + localCurrency
+            );
+        }
+
+        trip.setBudgetHomeCurrency(dtoBudgetHome);
+        trip.setBudgetLocalCurrency(dtoBudgetLocal);
+
+        return tripRepository.save(trip);
+    }
+
+
 
 }
 

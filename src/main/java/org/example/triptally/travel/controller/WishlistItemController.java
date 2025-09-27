@@ -9,6 +9,7 @@ import org.example.triptally.travel.mapper.WishlistItemMapper;
 import org.example.triptally.travel.model.WishlistItem;
 import org.example.triptally.travel.repository.WishlistItemRepository;
 import org.example.triptally.travel.service.WishlistItemService;
+import org.example.triptally.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,12 +27,14 @@ public class WishlistItemController {
     private final AuthValidationService authValidationService;
     private final WishlistItemMapper wishlistItemMapper;
     private final WishlistItemRepository wishlistItemRepository;
+    private final UserService userService;
 
-    public WishlistItemController(WishlistItemService wishlistItemService, AuthValidationService authValidationService, WishlistItemMapper wishlistItemMapper, WishlistItemRepository wishlistItemRepository) {
+    public WishlistItemController(WishlistItemService wishlistItemService, AuthValidationService authValidationService, WishlistItemMapper wishlistItemMapper, WishlistItemRepository wishlistItemRepository, UserService userService) {
         this.wishlistItemService = wishlistItemService;
         this.authValidationService = authValidationService;
         this.wishlistItemMapper = wishlistItemMapper;
         this.wishlistItemRepository = wishlistItemRepository;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -94,6 +97,10 @@ public class WishlistItemController {
                                                                    @PathVariable String tripId,
                                                                    Authentication auth){
         authValidationService.validateSelfOrThrow(userId, auth);
+
+        if (!userService.hasViewingAccess(auth, userId)) {
+            throw new AccessDeniedException("You are not allowed to view this expense.");
+        }
 
         WishlistItem wishlistItem = wishlistItemRepository.findById(wishlistItemId).orElseThrow();
 

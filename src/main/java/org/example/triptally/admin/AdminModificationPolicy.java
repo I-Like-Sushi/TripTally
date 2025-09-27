@@ -36,11 +36,15 @@ public class AdminModificationPolicy {
         boolean targetIsAdmin      = targetUser.getRoles().contains("ROLE_ADMIN");
         boolean targetIsSuperAdmin = targetUser.getRoles().contains("ROLE_SUPERADMIN");
 
+        if (userIsMyself) {
+            return;
+        }
+
         if (currentIsAdmin && !currentIsSuperAdmin && (targetIsAdmin || targetIsSuperAdmin)) {
             throw new UserNotAdmin("You are not authorized to modify another admin or superadmin.");
         }
 
-        if (currentIsSuperAdmin && targetIsSuperAdmin && !userIsMyself) {
+        if (currentIsSuperAdmin && targetIsSuperAdmin) {
             throw new ForbiddenAction("You are not authorized to modify another superadmin.");
         }
     }
@@ -48,7 +52,5 @@ public class AdminModificationPolicy {
     private boolean hasAuthority(Collection<? extends GrantedAuthority> authorities, String roleName) {
         return authorities.stream().anyMatch(a -> a.getAuthority().equals(roleName));
     }
-
-
 
 }

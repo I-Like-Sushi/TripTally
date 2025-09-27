@@ -74,7 +74,7 @@ public class UserController {
 
         authValidationService.validateSelfOrThrow(userId, auth);
 
-        boolean hasViewingPermission = userService.hasViewingAccess(auth, userId);
+        boolean hasViewingPermission = userService.hasViewingAccess(auth, targetUserId);
 
         User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

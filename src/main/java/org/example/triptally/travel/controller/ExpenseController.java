@@ -58,11 +58,10 @@ public class ExpenseController {
     public ResponseEntity<ExpenseResponseDto> getExpense(@PathVariable Long userId,
                                                          @PathVariable String tripId,
                                                          @PathVariable Long expenseId,
-                                                         @RequestBody Long targetId,
                                                          Authentication auth) {
         authValidationService.validateSelfOrThrow(userId, auth);
 
-        if (!userService.hasViewingAccess(auth, targetId)) {
+        if (!userService.hasViewingAccess(auth, userId)) {
             throw new AccessDeniedException("You are not allowed to view this expense.");
         }
 
@@ -100,7 +99,7 @@ public class ExpenseController {
     public ResponseEntity<ExpenseResponseDto> updateExpense(@PathVariable Long userId,
                                                             @PathVariable String tripId,
                                                             @PathVariable Long expenseId,
-                                                            @Valid @RequestBody ExpenseUpdateDto expenseUpdateDto,
+                                                            @RequestBody ExpenseUpdateDto expenseUpdateDto,
                                                             Authentication auth) {
         authValidationService.validateSelfOrThrow(userId, auth);
 

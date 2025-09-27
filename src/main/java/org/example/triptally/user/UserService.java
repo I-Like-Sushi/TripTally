@@ -66,6 +66,10 @@ public class UserService implements UserDetailsService {
         boolean hasViewingPermission = targetUser.getAllowedAccesView()
                 .contains(loggedInUser.getUsername());
 
+        if (loggedInUser.getId().equals(targetUser.getId())){
+            hasViewingPermission = true;
+        }
+
         return hasViewingPermission;
     }
 

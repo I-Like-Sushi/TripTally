@@ -69,9 +69,8 @@ public class AdminController {
             Authentication auth,
             @PathVariable Long adminId) {
 
-        // Target can be self.
-
-        adminModificationPolicy.enforce(auth, adminId);
+        authValidationService.validateSelfOrThrow(adminId, auth);
+        adminModificationPolicy.enforce(auth, targetId);
 
         User targetUser = userRepository.findById(targetId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -80,6 +79,24 @@ public class AdminController {
         userRepository.save(targetUser);
 
         return ResponseEntity.ok(userMapper.toDto(targetUser));
+    }
+
+    @PatchMapping("/{targetId}")
+    public ResponseEntity<String> updateUserStatus(@PathVariable Long adminId,
+                                                 @PathVariable Long targetId,
+                                                 @RequestBody UserUpdateDto dto,
+                                                 Authentication auth) {
+        authValidationService.validateSelfOrThrow(adminId, auth);
+        adminModificationPolicy.enforce(auth, adminId);
+
+        User targetUser = userRepository.findById(targetId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        userMapper.changeAccountStatus(dto, targetUser);
+        userRepository.save(targetUser);
+
+        return ResponseEntity.ok("Account of " + targetUser.getUsername() + " set to " + dto.isEnabled() + ".");
+
     }
 
 

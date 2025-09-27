@@ -46,6 +46,11 @@ public class TripResponseDto {
 
     private List<WishlistItemResponseDto> wishlistItems = new ArrayList<>();
 
+    private Long userId;
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+
     public String getTripId() { return tripId; }
     public void setTripId(String tripId) { this.tripId = tripId; }
 

@@ -35,6 +35,7 @@ public class TripMapper {
         dto.setWishlistItems(trip.getWishlistItems().stream()
                 .map(wishlistItemMapper::toDto)
                 .toList());
+        dto.setUserId(trip.getUser().getId());
         return dto;
     }
 
@@ -51,15 +52,11 @@ public class TripMapper {
         return trip;
     }
 
-    public void updateEntityFromDto(TripUpdateDto dto, Trip trip) {
+    public void updateEntityFromDto(TripRequestDto dto, Trip trip) {
         if (dto.getDestination() != null) trip.setDestination(dto.getDestination());
         if (dto.getDescription() != null) trip.setDescription(dto.getDescription());
         if (dto.getStartDate() != null) trip.setStartDate(dto.getStartDate());
         if (dto.getEndDate() != null) trip.setEndDate(dto.getEndDate());
-        if (dto.getBudgetHomeCurrency() != null) trip.setBudgetHomeCurrency(dto.getBudgetHomeCurrency());
-        if (dto.getBudgetLocalCurrency() != null) trip.setBudgetLocalCurrency(dto.getBudgetLocalCurrency());
-        if (dto.getHomeCurrencyCode() != null) trip.setHomeCurrencyCode(dto.getHomeCurrencyCode());
-        if (dto.getLocalCurrencyCode() != null) trip.setLocalCurrencyCode(dto.getLocalCurrencyCode());
     }
 
 }

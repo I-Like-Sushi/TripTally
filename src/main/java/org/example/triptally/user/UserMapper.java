@@ -74,4 +74,8 @@ public class UserMapper {
         if (dto.getGender() != null) user.setGender(dto.getGender());
         if (dto.getDateOfBirth() != null) user.setDateOfBirth(dto.getDateOfBirth());
     }
+
+    public void changeAccountStatus(UserUpdateDto dto, User user) {
+        user.setEnabled(dto.isEnabled());
+    }
 }

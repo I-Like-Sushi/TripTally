@@ -167,6 +167,7 @@ mvn clean package && java -jar target/TripTally-0.0.1.jar
   - GET /api/v1/admin/{adminId} → list users
   - GET /api/v1/admin/{adminId}/{targetId} → fetch a user
   - PUT /api/v1/admin/{adminId}/{targetId} → update user (policy enforced)
+  - PATCH /api/v1/admin/{adminId}/{targetId} → set whether user is active or not (policy enforced)
   - DELETE /api/v1/admin/{adminId}/{targetId} → delete user (policy enforced)
 
 - Super Admin (ROLE_SUPERADMIN; header X-SUPERADMIN-SECRET for certain ops)

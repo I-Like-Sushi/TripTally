@@ -16,9 +16,9 @@ public class ExpenseMapper {
         dto.setCategory(expense.getCategory());
         dto.setAmountLocal(expense.getAmountLocal());
         dto.setAmountHome(expense.getAmountHome());
-        dto.setTripId(expense.getTrip().getTripId());
         dto.setDate(expense.getDate());
         dto.setTimeStamp(expense.getTimeStamp());
+        dto.setTripId(expense.getTrip().getTripId());
         return dto;
     }
 
@@ -35,7 +35,5 @@ public class ExpenseMapper {
     public void updateEntityFromDto(ExpenseUpdateDto dto, Expense expense) {
         if (dto.getCategory() != null) expense.setCategory(dto.getCategory());
         if (dto.getDescription() != null) expense.setDescription(dto.getDescription());
-        if (dto.getAmountLocal() != null) expense.setAmountLocal(dto.getAmountLocal());
-        if (dto.getAmountHome() != null) expense.setAmountHome(dto.getAmountHome());
     }
 }
