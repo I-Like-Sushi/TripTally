@@ -1,3 +1,12 @@
+------- Created for Testing
+DELETE FROM wishlist_item;
+DELETE FROM expense;
+DELETE FROM trip;
+DELETE FROM user_allowed_access;
+DELETE FROM user_roles;
+DELETE FROM users;
+-------
+
 INSERT INTO users (
     id,
     username,
