@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false) // disable JwtAuthFilter and other security filters
+@AutoConfigureMockMvc(addFilters = false)
 @Transactional
 class UserControllerIntegrationTest {
 

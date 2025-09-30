@@ -75,7 +75,7 @@ public class WishlistItemController {
     public ResponseEntity<WishlistItemResponseDto> updateWishlistItem(@PathVariable String wishlistItemId,
                                                                       @PathVariable Long userId,
                                                                       @PathVariable String tripId,
-                                                                      @RequestBody WishlistItemUpdateDto dto,
+                                                                      @Valid @RequestBody WishlistItemUpdateDto dto,
                                                                       Authentication auth){
         authValidationService.validateSelfOrThrow(userId, auth);
 

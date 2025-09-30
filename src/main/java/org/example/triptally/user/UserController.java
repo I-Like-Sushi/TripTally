@@ -41,7 +41,7 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
-            @RequestBody UserUpdateDto dto,
+            @Valid @RequestBody UserUpdateDto dto,
             Authentication auth) {
 
         // Only self-update allowed

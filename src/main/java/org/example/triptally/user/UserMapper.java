@@ -46,8 +46,6 @@ public class UserMapper {
         dto.setTrips(user.getTrips().stream()
                 .map(tripMapper::toDto)
                 .toList());
-
-
         return dto;
     }
 

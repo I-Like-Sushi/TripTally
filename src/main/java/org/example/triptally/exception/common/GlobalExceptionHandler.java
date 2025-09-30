@@ -30,7 +30,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-
     @ExceptionHandler(InvalidLoginException.class)
     public ResponseEntity<Map<String, String>> handleInvalidLogin(InvalidLoginException ex) {
         return ResponseEntity

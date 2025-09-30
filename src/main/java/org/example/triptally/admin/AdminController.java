@@ -1,5 +1,6 @@
 package org.example.triptally.admin;
 
+import jakarta.validation.Valid;
 import org.example.triptally.auth.AuthValidationService;
 import org.example.triptally.exception.user.UserNotFoundException;
 import org.example.triptally.user.User;
@@ -65,7 +66,7 @@ public class AdminController {
     @PutMapping("/{targetId}")
     public ResponseEntity<UserResponseDto> updateAccount(
             @PathVariable Long targetId,
-            @RequestBody UserUpdateDto dto,
+            @Valid @RequestBody UserUpdateDto dto,
             Authentication auth,
             @PathVariable Long adminId) {
 

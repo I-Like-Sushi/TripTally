@@ -82,7 +82,7 @@ public class TripController {
 
     @PutMapping("/{tripId}")
     public ResponseEntity<TripResponseDto> updateTrip(@PathVariable Long userId,
-                                                      @RequestBody TripRequestDto dto,
+                                                      @Valid @RequestBody TripRequestDto dto,
                                                       Authentication auth,
                                                       @PathVariable String tripId) {
         authValidationService.validateSelfOrThrow(userId, auth);

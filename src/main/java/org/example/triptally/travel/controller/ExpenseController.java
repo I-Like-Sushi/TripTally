@@ -99,7 +99,7 @@ public class ExpenseController {
     public ResponseEntity<ExpenseResponseDto> updateExpense(@PathVariable Long userId,
                                                             @PathVariable String tripId,
                                                             @PathVariable Long expenseId,
-                                                            @RequestBody ExpenseUpdateDto expenseUpdateDto,
+                                                            @Valid @RequestBody ExpenseUpdateDto expenseUpdateDto,
                                                             Authentication auth) {
         authValidationService.validateSelfOrThrow(userId, auth);
 

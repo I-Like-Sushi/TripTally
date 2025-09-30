@@ -20,12 +20,15 @@ import java.net.URI;
 @ExtendWith(MockitoExtension.class)
 public class UserTest {
 
+    // NOT A UNIT TEST //
+    // Unit tests are done to test the @service layer, not the @controller layer.
+
     @Mock private UserRepository userRepository;
     @Mock private UserService userService;
     @Mock private UserMapper userMapper;
 
     @InjectMocks
-    private UserController userController;
+    private UserService userService;
 
     @Test
     void registerUser() {

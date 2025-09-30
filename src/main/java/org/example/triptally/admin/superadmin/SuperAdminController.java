@@ -114,7 +114,7 @@ public class SuperAdminController {
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<String> updateUser(
             @PathVariable Long targetId,
-            @RequestBody User user,
+            @Valid @RequestBody User user,
             Authentication auth,
             @PathVariable Long superAdminId,
             @RequestHeader(value = "X-SUPERADMIN-SECRET", required = false) String providedSecret) {
