@@ -1,4 +1,4 @@
-package org.example.triptally;
+package org.example.triptally.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.triptally.user.User;
