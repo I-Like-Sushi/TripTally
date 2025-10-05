@@ -1,5 +1,7 @@
 # TripTally
 
+<img src="./src/main/resources/static/TripTally.png" alt="TripTally logo" width="500" height="400">
+
 TripTally is a Java and Spring Boot–powered student project that makes it easy to plan, budget, and track travel expenses across multiple trips and currencies. With TripTally you can:
 
 - Define trips with start/end dates, destinations, home-currency and local-currency budgets.
@@ -11,7 +13,7 @@ TripTally is a Java and Spring Boot–powered student project that makes it easy
 - Generate summary reports to stay on budget.
 
 <sub><sup>*FX rates do not rely on an external API. Please update the rates to the value of market when used.
-See `scr/main/org/example/eindopdracht/travel/currencyRates/FxSnapshotLoader` for the rates that are being used in this project.</sup></sub>
+See `scr/main/org/example/triptally/travel/currencyRates/FxSnapshotLoader` for the rates that are being used in this project.</sup></sub>
 
 ---
 
@@ -34,13 +36,34 @@ See `scr/main/org/example/eindopdracht/travel/currencyRates/FxSnapshotLoader` fo
 
 ---
 
+## Project Dependencies
+
+### Spring Boot Starters
+- **spring-boot-starter-web** – Build RESTful web applications with Spring MVC
+- **spring-boot-starter-data-jpa** – JPA and Hibernate integration for database access
+- **spring-boot-starter-validation** – Bean validation with Hibernate Validator
+- **spring-boot-starter-security** – Authentication and authorization support
+- **spring-boot-starter-actuator** – Production-ready monitoring and management endpoints
+- **spring-boot-starter-webflux** – Reactive programming with Spring WebFlux
+
+### Database
+- **org.postgresql:postgresql:42.7.4** – PostgreSQL JDBC driver (runtime)
+
+### JWT (JSON Web Tokens)
+- **io.jsonwebtoken:jjwt-api:0.12.7** – JWT API
+- **io.jsonwebtoken:jjwt-impl:0.12.7** (runtime) – JWT implementation
+- **io.jsonwebtoken:jjwt-jackson:0.12.7** (runtime) – JSON serialization/deserialization for JWT
+
+### Testing
+- **spring-boot-starter-test** – Spring Boot testing utilities
+- **spring-security-test** – Security testing support
+- **org.junit.jupiter:junit-jupiter:5.9.2** – JUnit 5 testing framework
+- **org.mockito:mockito-junit-jupiter:4.8.0** – Mockito integration with JUnit 5
+
+
+---
+
 ## Getting Started
-
-Prerequisites:
-
-- Java 21
-- Maven
-- PostgreSQL (local or Docker)
 
 ### Setup:
 
@@ -48,7 +71,7 @@ Clone the repository:
 
 Using HTTPS:
 ```bash
-git clone https://github.com/your-username/TripTally.git
+git clone https://github.com/I-Like-Sushi/TripTally.git
 ```
 
 Or Using SSH:
@@ -184,6 +207,49 @@ Notes:
 - “Self” means the authenticated user must match the path/query id as indicated.
 - For trip/expense/wishlist item routes, the resource must belong to the specified trip where noted.
 
+## API Example
+
+### Sending a request:
+
+Create a new user: <br/>
+Method: POST <br/>
+Content-Type: application/json <br/>
+URI: {{host}}/api/v1/users
+```json
+{
+  "username": "sushiFan92",
+  "firstName": "Aiko",
+  "lastName": "Tanaka",
+  "email": "aiko.tanaka@example.com",
+  "password": "Pasword_55897",
+  "bio": "Traveler, foodie, and backend tinkerer who loves exploring new cities and debugging old code.",
+  "dateOfBirth": "1992-07-15",
+  "gender": "female"
+}
+```
+
+### Receiving a response:
+
+Location: /users/5001645532 <br/>
+Content-Type: application/json
+
+```json
+{
+    "id": 5001645532,
+    "username": "sushiFan92",
+    "firstName": "Aiko",
+    "lastName": "Tanaka",
+    "email": "aiko.tanaka@example.com",
+    "dateOfBirth": "1992-07-15",
+    "accountCreatedAt": "2025-10-05 11:28:49",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "gender": "female",
+    "bio": "Traveler, foodie, and backend tinkerer who loves exploring new cities and debugging old code.",
+    "enabled": true
+}
+```
 
 ## Development
 
@@ -207,11 +273,7 @@ DB_USERNAME=even_more_secret
 DB_PASSWORD=secrety_secret
 ```
 
-## Testing
-
-```bash
-mvn test mvn verify mvn jacoco:report
-```
+Please note that you must create these `.env` files inside your `src` directory. If you do not wish to use `.env` files, you may delete the `spring.config.import` property from the `application.properties` file.
 
 ## Docker (Optional)
 

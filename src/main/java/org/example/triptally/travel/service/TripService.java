@@ -90,7 +90,7 @@ public class TripService {
                                         .getRate()
                         );
 
-                BigDecimal tolerance = new BigDecimal("0.01"); // allow 1 cent difference
+                BigDecimal tolerance = new BigDecimal("0.01");
                 if (dto.getBudgetLocalCurrency().subtract(expectedLocal).abs().compareTo(tolerance) > 0) {
                     throw new IllegalArgumentException(
                             "Provided budgets do not match the FX rate for " +
@@ -166,7 +166,7 @@ public class TripService {
         ).orElseThrow(() -> new IllegalStateException("No FX rate found")).getRate();
 
         BigDecimal expectedLocal = dtoBudgetHome.multiply(rate);
-        BigDecimal tolerance = new BigDecimal("0.01"); // 1 cent tolerance
+        BigDecimal tolerance = new BigDecimal("0.01");
 
         if (dtoBudgetLocal.subtract(expectedLocal).abs().compareTo(tolerance) > 0) {
             throw new IllegalArgumentException(
